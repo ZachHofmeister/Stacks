@@ -39,9 +39,7 @@ enum PeriodUnits: String, CaseIterable, Identifiable, Codable {
 
 class BudgetStack: ObservableObject, Identifiable, Codable {
     var id = UUID()
-//    var budget: Budget
     @Published var name: String
-//    @Published var desc: String
     @Published var color: Color
     @Published var type: StackType
     @Published var percent: Double
@@ -69,7 +67,6 @@ class BudgetStack: ObservableObject, Identifiable, Codable {
     
     init() {
         name = "Stack"
-//        desc = ""
         color = .random
         type = .percent
         percent = 0.0
@@ -344,15 +341,18 @@ struct StackEditor: View {
         .onChange(of: stack.accrue) {
             _ in
             budget.saveBudget()
+            budget.objectWillChange.send()
         }
         .onChange(of: stack.accrueStart) {
             _ in
             budget.saveBudget()
+            budget.objectWillChange.send()
         }
         .onChange(of: stack.accrueFrequency) {
             val in
             if (val <= 0) { stack.accrueFrequency = 1 }
             budget.saveBudget()
+            budget.objectWillChange.send()
         }
         .onChange(of: stack.icon) {
             _ in

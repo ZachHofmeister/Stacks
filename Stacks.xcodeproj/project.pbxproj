@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		92295A7B28B5D2D20096F0E5 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92295A7A28B5D2D10096F0E5 /* CodableColor.swift */; };
+		922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 922F620A28A971CC0078D87A /* SymbolPicker */; };
+		9248050828A176CA00AD79C1 /* BudgetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248050728A176CA00AD79C1 /* BudgetItem.swift */; };
+		9248050A28A176D800AD79C1 /* BudgetStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248050928A176D800AD79C1 /* BudgetStack.swift */; };
+		925688C528A8C91600BE1CFB /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925688C428A8C91600BE1CFB /* Utility.swift */; };
+		92884FDD28A443AA0080E722 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92884FDC28A443AA0080E722 /* Extensions.swift */; };
+		92ABD56228A3432300D0DED2 /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92ABD56128A3432300D0DED2 /* Balance.swift */; };
 		92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610028A0D42E0076FB89 /* StacksApp.swift */; };
 		92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610228A0D42E0076FB89 /* ContentView.swift */; };
 		92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92F3610428A0D4320076FB89 /* Assets.xcassets */; };
@@ -14,6 +21,7 @@
 		92F3611228A0D4330076FB89 /* StacksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3611128A0D4330076FB89 /* StacksTests.swift */; };
 		92F3611C28A0D4330076FB89 /* StacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3611B28A0D4330076FB89 /* StacksUITests.swift */; };
 		92F3611E28A0D4330076FB89 /* StacksUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3611D28A0D4330076FB89 /* StacksUITestsLaunchTests.swift */; };
+		92F3612B28A0DC840076FB89 /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3612A28A0DC840076FB89 /* Budget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +42,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		920B11AE28B01FE200175252 /* Stacks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Stacks.entitlements; sourceTree = "<group>"; };
+		92295A7A28B5D2D10096F0E5 /* CodableColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
+		9248050728A176CA00AD79C1 /* BudgetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetItem.swift; sourceTree = "<group>"; };
+		9248050928A176D800AD79C1 /* BudgetStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetStack.swift; sourceTree = "<group>"; };
+		925688C428A8C91600BE1CFB /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		92884FDC28A443AA0080E722 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		92ABD56128A3432300D0DED2 /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		92F360FD28A0D42E0076FB89 /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
 		92F3610228A0D42E0076FB89 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +59,7 @@
 		92F3611728A0D4330076FB89 /* StacksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StacksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F3611B28A0D4330076FB89 /* StacksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksUITests.swift; sourceTree = "<group>"; };
 		92F3611D28A0D4330076FB89 /* StacksUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		92F3612A28A0DC840076FB89 /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,10 +111,18 @@
 		92F360FF28A0D42E0076FB89 /* Stacks */ = {
 			isa = PBXGroup;
 			children = (
+				920B11AE28B01FE200175252 /* Stacks.entitlements */,
 				92F3610028A0D42E0076FB89 /* StacksApp.swift */,
 				92F3610228A0D42E0076FB89 /* ContentView.swift */,
 				92F3610428A0D4320076FB89 /* Assets.xcassets */,
 				92F3610628A0D4320076FB89 /* Preview Content */,
+				92F3612A28A0DC840076FB89 /* Budget.swift */,
+				925688C428A8C91600BE1CFB /* Utility.swift */,
+				9248050728A176CA00AD79C1 /* BudgetItem.swift */,
+				9248050928A176D800AD79C1 /* BudgetStack.swift */,
+				92884FDC28A443AA0080E722 /* Extensions.swift */,
+				92ABD56128A3432300D0DED2 /* Balance.swift */,
+				92295A7A28B5D2D10096F0E5 /* CodableColor.swift */,
 			);
 			path = Stacks;
 			sourceTree = "<group>";
@@ -143,6 +168,9 @@
 			dependencies = (
 			);
 			name = Stacks;
+			packageProductDependencies = (
+				922F620A28A971CC0078D87A /* SymbolPicker */,
+			);
 			productName = Stacks;
 			productReference = 92F360FD28A0D42E0076FB89 /* Stacks.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +243,9 @@
 				Base,
 			);
 			mainGroup = 92F360F428A0D42E0076FB89;
+			packageReferences = (
+				922F620928A971CC0078D87A /* XCRemoteSwiftPackageReference "SymbolPicker" */,
+			);
 			productRefGroup = 92F360FE28A0D42E0076FB89 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -257,8 +288,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9248050A28A176D800AD79C1 /* BudgetStack.swift in Sources */,
 				92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */,
+				925688C528A8C91600BE1CFB /* Utility.swift in Sources */,
 				92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */,
+				9248050828A176CA00AD79C1 /* BudgetItem.swift in Sources */,
+				92295A7B28B5D2D20096F0E5 /* CodableColor.swift in Sources */,
+				92ABD56228A3432300D0DED2 /* Balance.swift in Sources */,
+				92F3612B28A0DC840076FB89 /* Budget.swift in Sources */,
+				92884FDD28A443AA0080E722 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,17 +452,22 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Stacks/Preview Content\"";
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -432,6 +475,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zachhof.Stacks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -443,17 +488,22 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Stacks/Preview Content\"";
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -461,6 +511,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zachhof.Stacks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -583,6 +635,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		922F620928A971CC0078D87A /* XCRemoteSwiftPackageReference "SymbolPicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/xnth97/SymbolPicker.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		922F620A28A971CC0078D87A /* SymbolPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 922F620928A971CC0078D87A /* XCRemoteSwiftPackageReference "SymbolPicker" */;
+			productName = SymbolPicker;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 92F360F528A0D42E0076FB89 /* Project object */;
 }

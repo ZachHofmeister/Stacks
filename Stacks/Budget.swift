@@ -160,7 +160,7 @@ struct BudgetView: View {
                         StacksListView()
                     }
                     .navigationTitle(budget.name)
-                    .toolbar {
+//                    .toolbar {
 //                        ToolbarItem(placement: .navigationBarTrailing) {
 //                            if (budget.preview) {
 //                                Button(action: {budget.preview.toggle()}) {
@@ -186,7 +186,7 @@ struct BudgetView: View {
 //                                Image(systemName: "square.and.arrow.down")
 //                            }
 //                        }
-                    }
+//                    }
                 }
                 .padding()
                 .background(Color(.secondarySystemBackground))
@@ -238,6 +238,7 @@ struct BalanceEditView: View {
     }
 }
 
+//TODO: can this be combined with BudgetItemEditView?
 struct IncomeEditView: View {
     @EnvironmentObject var budget: Budget
     
@@ -286,7 +287,7 @@ struct StacksListView: View {
     var body: some View {
         ForEach($budget.stacks, id: \.id) {
             $stack in
-            StackPreview(stack: stack)
+            StackPreView(stack: stack)
         }
         NavigationLink(destination: StacksEditView()) {
             Text("Edit Stacks")
@@ -301,7 +302,7 @@ struct StacksEditView: View {
         List {
             ForEach($budget.stacks, id: \.id) {
                 $stack in
-                StackPreview(stack: stack)
+                StackPreView(stack: stack)
                     //.listRowBackground(stack.color)
             }
             .onDelete(perform: self.deleteItem)

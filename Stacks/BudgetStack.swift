@@ -120,7 +120,7 @@ class BudgetStack: ObservableObject, Identifiable, Codable {
         case .reserved:
             return reserved
         case .accrue:
-            return accrue * Double(accruePeriodsElapsed) + totalBudgetItems //TODO needs work
+            return accrue * Double(accruePeriodsElapsed) + totalBudgetItems
         case .overflow:
             var reserved = 0.0
             for stack in budget.stacks {
@@ -133,7 +133,7 @@ class BudgetStack: ObservableObject, Identifiable, Codable {
     }
 }
 
-struct StackPreview: View {
+struct StackPreView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
     @State private var editing = false
@@ -141,7 +141,7 @@ struct StackPreview: View {
     var body: some View {
         VStack {
 //            Button (action: {editing = true}) {
-            NavigationLink(destination: StackEditor(stack: stack)) {
+            NavigationLink(destination: StackEditorView(stack: stack)) {
                 HStack {
                     VStack {
                         HStack {
@@ -178,141 +178,142 @@ struct StackPreview: View {
                 }
             }
             .buttonStyle(BudgetStackButtonStyle(color: Color(.systemBackground)))
-//            .fullScreenCover(isPresented: $editing) {
-//                StackEditor(stack: stack).environment(\.showingSheet, $editing)
-//            }
         }
     }
 }
 
-struct ShowingSheetKey: EnvironmentKey {
-    static let defaultValue: Binding<Bool>? = nil
-}
-
-extension EnvironmentValues {
-    var showingSheet: Binding<Bool>? {
-        get { self[ShowingSheetKey.self] }
-        set { self[ShowingSheetKey.self] = newValue }
-    }
-}
-
-struct StackEditor: View {
+struct StackEditorView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
-    @Environment(\.showingSheet) var showingSheet
-    @State private var iconPickerOpen = false
     
     var body: some View {
-        VStack {
-            VStack {
-                Button(action: {
-                    iconPickerOpen = true
-                }) {
-                    Image(systemName: stack.icon)
-                        .padding(16)
-                        .foregroundColor(Color.white)
-                        .font(.system(size: 36))
-                        .background(Circle().fill(stack.color))
-                }
-                .sheet(isPresented: $iconPickerOpen) {
-                    ZStack {
-                        SymbolPicker(symbol: $stack.icon)
-                        VStack {
-                            HStack {
-                                Spacer()
-                                ColorPicker("Stack Color", selection: $stack.color, supportsOpacity: false)
-                                    .labelsHidden()
-                                    .padding()
-                            }
-                            Spacer()
-                        }
-                    }
-                }
-                .padding(.top)
-                
-                TextField("Stack Name", text: $stack.name)
-                    .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
-                    .padding([.top, .horizontal])
-                
-                Picker("Stack Type", selection: $stack.type) {
-                    Text("Percent").tag(StackType.percent)
-                    Text("Reserve").tag(StackType.reserved)
-                    Text("Accrue").tag(StackType.accrue)
-                    if !budget.hasOverflowStack || stack.type == .overflow {
-                        Text("Overflow").tag(StackType.overflow)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal)
-                
-                if stack.type == .percent {
-                    HStack {
-                        TextField("Percent", value: $stack.percent, formatter: budget.perFormatter)
-                            .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
-                        Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                            .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                            .bold()
-                    }
-                    .padding([.horizontal, .bottom])
-                } else if stack.type == .reserved {
-                    HStack {
-                        TextField("Reserved Amount", value: $stack.reserved, formatter: budget.curFormatter)
-                            .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
-                        Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                            .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                            .bold()
-                    }
-                    .padding([.horizontal, .bottom])
-                } else if stack.type == .accrue {
-                    HStack {
-                        TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter)
-                            .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
-                        Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                            .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                            .bold()
-                    }
-                    .padding(.horizontal)
-                    DatePicker("Starting", selection: $stack.accrueStart, displayedComponents: [.date])
-                        .datePickerStyle(.compact)
-                        .padding(.horizontal)
-                    HStack {
-                        Text("Accrue every")
-                        TextField("Accrue Frequency", value: $stack.accrueFrequency, format: .number)
-                            .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
-                        Picker("Accrue Period", selection: $stack.accruePeriod) {
-                            Text("Days").tag(PeriodUnits.Days)
-                            Text("Weeks").tag(PeriodUnits.Weeks)
-                            Text("Months").tag(PeriodUnits.Months)
-                            Text("Years").tag(PeriodUnits.Years)
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                    }
-                    .padding([.horizontal, .bottom])
-                } else if stack.type == .overflow {
-                    Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                        .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                        .bold()
-                        .padding(.top)
-                    Text("Note: You can only have 1 overflow stack.")
-                        .font(.footnote)
-                        .padding([.top, .horizontal, .bottom])
-                }
-            } //second VStack
-            .background(Color(.systemBackground))
-            .cornerRadius(10)
-            .padding([.horizontal])
+        List {
+            //Header, edit settings of stack
+            Section {
+                StackSettingsView(stack: stack)
+            }
+            .listRowInsets(EdgeInsets())
             
+            
+            //List of budget items
             if stack.type != .overflow {
                 BudgetItemEditView(stack: stack)
                     .cornerRadius(10)
                     .padding([.horizontal])
             }
-            Spacer()
         } //main vstack
-//        .textFieldStyle(.roundedBorder)
         .background(Color(.secondarySystemBackground))
-        .navigationTitle("Stack Info"/*stack.name*/)
+        .navigationTitle("Stack Info")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct StackSettingsView: View {
+    @EnvironmentObject var budget: Budget
+    @ObservedObject var stack: BudgetStack
+    @State private var iconPickerOpen = false
+    
+    var body: some View {
+        VStack {
+            Button(action: {}, label: {
+                Image(systemName: stack.icon)
+                    .padding(16)
+                    .foregroundColor(Color.white)
+                    .font(.system(size: 36))
+                    .background(Circle().fill(stack.color))
+            })
+            .onTapGesture() {
+                iconPickerOpen = true
+            }
+                
+            .sheet(isPresented: $iconPickerOpen) {
+                ZStack {
+                    SymbolPicker(symbol: $stack.icon)
+                    VStack {
+                        HStack {
+                            Spacer()
+                            ColorPicker("Stack Color", selection: $stack.color, supportsOpacity: false)
+                                .labelsHidden()
+                                .padding()
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            .padding(.top)
+            
+            TextField("Stack Name", text: $stack.name)
+                .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                .padding([.top, .horizontal])
+            
+            Picker("Stack Type", selection: $stack.type) {
+                Text("Percent").tag(StackType.percent)
+                Text("Reserve").tag(StackType.reserved)
+                Text("Accrue").tag(StackType.accrue)
+                if !budget.hasOverflowStack || stack.type == .overflow {
+                    Text("Overflow").tag(StackType.overflow)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal)
+            
+            if stack.type == .percent {
+                HStack {
+                    TextField("Percent", value: $stack.percent, formatter: budget.perFormatter)
+                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                    Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
+                        .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
+                        .bold()
+                }
+                .padding([.horizontal, .bottom])
+            } else if stack.type == .reserved {
+                HStack {
+                    TextField("Reserved Amount", value: $stack.reserved, formatter: budget.curFormatter)
+                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                    Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
+                        .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
+                        .bold()
+                }
+                .padding([.horizontal, .bottom])
+            } else if stack.type == .accrue {
+                HStack {
+                    TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter)
+                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                    Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
+                        .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
+                        .bold()
+                }
+                .padding(.horizontal)
+                DatePicker("Starting", selection: $stack.accrueStart, displayedComponents: [.date])
+                    .datePickerStyle(.compact)
+                    .padding(.horizontal)
+                HStack {
+                    Text("Accrue every")
+                    TextField("Accrue Frequency", value: $stack.accrueFrequency, format: .number)
+                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                    Picker("Accrue Period", selection: $stack.accruePeriod) {
+                        Text("Days").tag(PeriodUnits.Days)
+                        Text("Weeks").tag(PeriodUnits.Weeks)
+                        Text("Months").tag(PeriodUnits.Months)
+                        Text("Years").tag(PeriodUnits.Years)
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .labelsHidden()
+                }
+                .padding([.horizontal, .bottom])
+            } else if stack.type == .overflow {
+                Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
+                    .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
+                    .bold()
+                    .padding(.top)
+                Text("Note: You can only have 1 overflow stack.")
+                    .font(.footnote)
+                    .padding([.top, .horizontal, .bottom])
+            }
+        } //second VStack
+        .background(Color(.systemBackground))
+        .cornerRadius(10)
+//        .padding([.horizontal])
         .onChange(of: stack.name) {
             _ in
             budget.saveBudget()
@@ -360,25 +361,6 @@ struct StackEditor: View {
             budget.objectWillChange.send()
         }
     }
-    
-    private func saveAndClose() {
-        budget.saveBudget()
-        budget.objectWillChange.send()
-        showingSheet?.wrappedValue = false
-    }
-}
-
-struct BudgetStackButtonStyle: ButtonStyle {
-    var color: Color
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Spacer()
-            configuration.label
-            Spacer()
-        }
-        .padding()
-        .background(color.cornerRadius(10))
-    }
 }
 
 struct BudgetItemEditView: View {
@@ -386,26 +368,22 @@ struct BudgetItemEditView: View {
     @ObservedObject var stack: BudgetStack
     
     var body: some View {
-        List {
-            ForEach($stack.budgetItems, id: \.id) {
-                $bi in
-                BudgetItemEditor(budgetItem: bi)
-            }
-            .onDelete(perform: self.deleteItem)
-            .onMove(perform: self.moveItem)
-//            .padding(EdgeInsets())
+        ForEach($stack.budgetItems, id: \.id) {
+            $bi in
+            BudgetItemEditor(budgetItem: bi)
         }
-        HStack {
-//            Spacer()
-            EditButton()
-                .padding()
-            Spacer()
-            Image(systemName: "plus")
-                .onTapGesture(count: 1, perform: self.addItem)
-                .foregroundColor(.accentColor)
-                .padding()
-//            Spacer()
-        }
+        .onDelete(perform: self.deleteItem)
+        .onMove(perform: self.moveItem)
+//        .toolbar {
+//            ToolbarItemGroup(placement: .navigationBarTrailing) {
+//                EditButton()
+//                    .padding()
+//                Image(systemName: "plus")
+//                    .onTapGesture(count: 1, perform: self.addItem)
+//                    .foregroundColor(.accentColor)
+//                    .padding()
+//            }
+//        }
     }
     
     private func deleteItem (at offset: IndexSet) {
@@ -422,5 +400,18 @@ struct BudgetItemEditView: View {
     private func addItem () {
         stack.budgetItems.insert(BudgetItem(), at: 0)
         budget.saveBudget()
+    }
+}
+
+struct BudgetStackButtonStyle: ButtonStyle {
+    var color: Color
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Spacer()
+            configuration.label
+            Spacer()
+        }
+        .padding()
+        .background(color.cornerRadius(10))
     }
 }

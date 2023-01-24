@@ -136,63 +136,54 @@ struct BudgetView: View {
 //    @State private var isImporting: Bool = false
     
     var body: some View {
-        GeometryReader {
-            g in
-            NavigationView {
-                ScrollView {
-                    VStack {
-                        NavigationLink (destination: BalanceEditView()) {
-                            HStack {
-                                Text("Total Balance: \(budget.formatCurrency(from: budget.totalBalance))")
-                                .foregroundColor(.primary)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                            }
-                        }.buttonStyle(.bordered)
-                        NavigationLink (destination: IncomeEditView()) {
-                            HStack {
-                                Text("Total Income: \(budget.formatCurrency(from: budget.totalIncome))")
-                                .foregroundColor(.primary)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                            }
-                        }.buttonStyle(.bordered)
-                        StacksListView()
+        NavigationView {
+            List {
+                Section {
+                    NavigationLink (destination: BalanceEditView()) {
+                        Text("Total Balance: \(budget.formatCurrency(from: budget.totalBalance))")
                     }
-                    .navigationTitle(budget.name)
-//                    .toolbar {
-//                        ToolbarItem(placement: .navigationBarTrailing) {
-//                            if (budget.preview) {
-//                                Button(action: {budget.preview.toggle()}) {
-//                                    HStack {
-//                                        Spacer()
-//                                        Text("Preview").foregroundColor(Color.white)
-//                                        Spacer()
-//                                    }
-//                                }
-//                                .background(Color.blue.cornerRadius(10))
-//                            } else {
-//                                Button(action: {budget.preview.toggle()}) {
-//                                    HStack {
-//                                        Spacer()
-//                                        Text("Preview")
-//                                        Spacer()
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        ToolbarItem(placement: .navigationBarTrailing) {
-//                            Button(action: {}) {
-//                                Image(systemName: "square.and.arrow.down")
-//                            }
-//                        }
-//                    }
                 }
-                .padding()
-                .background(Color(.secondarySystemBackground))
+                Section {
+                    NavigationLink (destination: IncomeEditView()) {
+                        Text("Total Income: \(budget.formatCurrency(from: budget.totalIncome))")
+                    }
+                }
+                ForEach($budget.stacks, id: \.id) {
+                    $stack in
+                    StackPreView(stack: stack)
+                }
+                .onDelete(perform: self.deleteStack)
+                .onMove(perform: self.moveStack)
             }
-            .environmentObject(budget)
+            .background(Color(.secondarySystemBackground))
+            .navigationTitle("Budget")
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    EditButton()
+                    Image(systemName: "plus")
+                        .onTapGesture(count: 1, perform: self.addStack)
+                        .foregroundColor(.accentColor)
+                }
+            }
         }
+        .environmentObject(budget)
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+    
+    private func deleteStack (at offset: IndexSet) {
+        budget.stacks.remove(atOffsets: offset)
+        budget.saveBudget()
+        budget.objectWillChange.send()
+    }
+    private func moveStack (at offset: IndexSet, to index: Int) {
+        DispatchQueue.main.async {
+            budget.stacks.move(fromOffsets: offset, toOffset: index)
+            budget.saveBudget()
+        }
+    }
+    private func addStack () {
+        budget.stacks.append(BudgetStack())
+        budget.saveBudget()
     }
 }
 
@@ -205,34 +196,32 @@ struct BalanceEditView: View {
                 $bal in
                 BalanceEditor(balance: bal)
             }
-            .onDelete(perform: self.deleteItem)
-            .onMove(perform: self.moveItem)
+            .onDelete(perform: self.deleteBalance)
+            .onMove(perform: self.moveBalance)
         }
         .navigationTitle("Balances")
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItemGroup(placement: .bottomBar) {
                 EditButton()
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
                 Image(systemName: "plus")
-                .onTapGesture(count: 1, perform: self.addItem)
-                .foregroundColor(.accentColor)
+                    .onTapGesture(count: 1, perform: self.addBalance)
+                    .foregroundColor(.accentColor)
             }
         }
     }
     
-    private func deleteItem (at offset: IndexSet) {
+    private func deleteBalance (at offset: IndexSet) {
         budget.balances.remove(atOffsets: offset)
         budget.saveBudget()
         budget.objectWillChange.send()
     }
-    private func moveItem (at offset: IndexSet, to index: Int) {
+    private func moveBalance (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
             budget.balances.move(fromOffsets: offset, toOffset: index)
             budget.saveBudget()
         }
     }
-    private func addItem () {
+    private func addBalance () {
         budget.balances.append(Balance())
         budget.saveBudget()
     }
@@ -248,92 +237,37 @@ struct IncomeEditView: View {
                 $bi in
                 BudgetItemEditor(budgetItem: bi)
             }
-            .onDelete(perform: self.deleteItem)
-            .onMove(perform: self.moveItem)
+            .onDelete(perform: self.deleteIncome)
+            .onMove(perform: self.moveIncome)
         }
         .navigationTitle("Income")
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItemGroup(placement: .bottomBar) {
                 EditButton()
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
                 Image(systemName: "plus")
-                .onTapGesture(count: 1, perform: self.addItem)
-                .foregroundColor(.accentColor)
+                    .onTapGesture(count: 1, perform: self.addIncome)
+                    .foregroundColor(.accentColor)
             }
         }
     }
     
-    private func deleteItem (at offset: IndexSet) {
+    private func deleteIncome (at offset: IndexSet) {
         budget.incomes.remove(atOffsets: offset)
         budget.saveBudget()
         budget.objectWillChange.send()
     }
-    private func moveItem (at offset: IndexSet, to index: Int) {
+    private func moveIncome (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
             budget.incomes.move(fromOffsets: offset, toOffset: index)
             budget.saveBudget()
         }
     }
-    private func addItem () {
+    private func addIncome () {
         budget.incomes.insert(BudgetItem(), at: 0)
         budget.saveBudget()
     }
-}
-
-struct StacksListView: View {
-    @EnvironmentObject var budget: Budget
-    
-    var body: some View {
-        ForEach($budget.stacks, id: \.id) {
-            $stack in
-            StackPreView(stack: stack)
-        }
-        NavigationLink(destination: StacksEditView()) {
-            Text("Edit Stacks")
-        }.buttonStyle(.bordered)
-    }
-}
-
-struct StacksEditView: View {
-    @EnvironmentObject var budget: Budget
-
-    var body: some View {
-        List {
-            ForEach($budget.stacks, id: \.id) {
-                $stack in
-                StackPreView(stack: stack)
-                    //.listRowBackground(stack.color)
-            }
-            .onDelete(perform: self.deleteItem)
-            .onMove(perform: self.moveItem)
-        }
-        .navigationTitle("Stacks")
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Image(systemName: "plus")
-                .onTapGesture(count: 1, perform: self.addItem)
-                .foregroundColor(.accentColor)
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                EditButton()
-            }
-        }
-    }
-
-    private func deleteItem (at offset: IndexSet) {
-        budget.stacks.remove(atOffsets: offset)
-        budget.saveBudget()
-        budget.objectWillChange.send()
-    }
-    private func moveItem (at offset: IndexSet, to index: Int) {
-        DispatchQueue.main.async {
-            budget.stacks.move(fromOffsets: offset, toOffset: index)
-            budget.saveBudget()
-        }
-    }
-    private func addItem () {
-        budget.stacks.append(BudgetStack())
+    private func duplicateIncome (at offset: IndexSet) {
+        budget.incomes.insert(BudgetItem(), at: 0)
         budget.saveBudget()
     }
 }

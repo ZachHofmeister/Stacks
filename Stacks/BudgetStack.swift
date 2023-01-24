@@ -153,7 +153,6 @@ struct StackPreView: View {
                                 .background(Circle().fill(stack.color)
                             )
                             Text(stack.name)
-                            Spacer()
                         }
                     }
                     Spacer()
@@ -197,14 +196,45 @@ struct StackEditorView: View {
             
             //List of budget items
             if stack.type != .overflow {
-                BudgetItemEditView(stack: stack)
-                    .cornerRadius(10)
-                    .padding([.horizontal])
+                ForEach($stack.budgetItems, id: \.id) {
+                    $bi in
+                    BudgetItemEditor(budgetItem: bi)
+                }
+                .onDelete(perform: self.deleteItem)
+                .onMove(perform: self.moveItem)
+                .cornerRadius(10)
+                .padding([.horizontal])
             }
         } //main vstack
         .background(Color(.secondarySystemBackground))
         .navigationTitle("Stack Info")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if stack.type != .overflow {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    EditButton()
+                    Image(systemName: "plus")
+                        .onTapGesture(count: 1, perform: self.addItem)
+                        .foregroundColor(.accentColor)
+                }
+            }
+        }
+    }
+    
+    private func deleteItem (at offset: IndexSet) {
+        stack.budgetItems.remove(atOffsets: offset)
+        budget.saveBudget()
+        budget.objectWillChange.send()
+    }
+    private func moveItem (at offset: IndexSet, to index: Int) {
+        DispatchQueue.main.async {
+            stack.budgetItems.move(fromOffsets: offset, toOffset: index)
+            budget.saveBudget()
+        }
+    }
+    private func addItem () {
+        stack.budgetItems.insert(BudgetItem(), at: 0)
+        budget.saveBudget()
     }
 }
 
@@ -311,7 +341,7 @@ struct StackSettingsView: View {
                     .padding([.top, .horizontal, .bottom])
             }
         } //second VStack
-        .background(Color(.systemBackground))
+//        .background(Color(.systemBackground))
         .cornerRadius(10)
 //        .padding([.horizontal])
         .onChange(of: stack.name) {
@@ -360,46 +390,6 @@ struct StackSettingsView: View {
             budget.saveBudget()
             budget.objectWillChange.send()
         }
-    }
-}
-
-struct BudgetItemEditView: View {
-    @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
-    
-    var body: some View {
-        ForEach($stack.budgetItems, id: \.id) {
-            $bi in
-            BudgetItemEditor(budgetItem: bi)
-        }
-        .onDelete(perform: self.deleteItem)
-        .onMove(perform: self.moveItem)
-//        .toolbar {
-//            ToolbarItemGroup(placement: .navigationBarTrailing) {
-//                EditButton()
-//                    .padding()
-//                Image(systemName: "plus")
-//                    .onTapGesture(count: 1, perform: self.addItem)
-//                    .foregroundColor(.accentColor)
-//                    .padding()
-//            }
-//        }
-    }
-    
-    private func deleteItem (at offset: IndexSet) {
-        stack.budgetItems.remove(atOffsets: offset)
-        budget.saveBudget()
-        budget.objectWillChange.send()
-    }
-    private func moveItem (at offset: IndexSet, to index: Int) {
-        DispatchQueue.main.async {
-            stack.budgetItems.move(fromOffsets: offset, toOffset: index)
-            budget.saveBudget()
-        }
-    }
-    private func addItem () {
-        stack.budgetItems.insert(BudgetItem(), at: 0)
-        budget.saveBudget()
     }
 }
 

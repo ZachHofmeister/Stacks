@@ -48,6 +48,7 @@ struct BalanceEditor: View {
             TextField("Name", text: $balance.name).foregroundColor(.blue)
             TextField("Balance", value: $balance.balance, formatter: budget.curFormatter)
                 .foregroundColor(.green)
+                .modifier(TextfieldSelectAllModifier())
         }
         .onChange(of: balance.name) {
             _ in

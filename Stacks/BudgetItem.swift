@@ -52,6 +52,7 @@ struct BudgetItemEditor: View {
             HStack {
                 TextField("Amount", value: $budgetItem.amount, formatter: budget.curFormatter)
                     .foregroundColor(budgetItem.amount >= 0 ? .green : .red)
+                    .modifier(TextfieldSelectAllModifier())
                 DatePicker("Date", selection: $budgetItem.date, displayedComponents: [.date])
                     .datePickerStyle(.compact)
                     .labelsHidden()

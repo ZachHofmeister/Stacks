@@ -206,7 +206,6 @@ struct StackEditorView: View {
                 .padding([.horizontal])
             }
         } //main vstack
-        .background(Color(.secondarySystemBackground))
         .navigationTitle("Stack Info")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -255,7 +254,6 @@ struct StackSettingsView: View {
             .onTapGesture() {
                 iconPickerOpen = true
             }
-                
             .sheet(isPresented: $iconPickerOpen) {
                 ZStack {
                     SymbolPicker(symbol: $stack.icon)
@@ -273,7 +271,7 @@ struct StackSettingsView: View {
             .padding(.top)
             
             TextField("Stack Name", text: $stack.name)
-                .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                .modifier(BudgetTextfieldModifier())
                 .padding([.top, .horizontal])
             
             Picker("Stack Type", selection: $stack.type) {
@@ -290,7 +288,8 @@ struct StackSettingsView: View {
             if stack.type == .percent {
                 HStack {
                     TextField("Percent", value: $stack.percent, formatter: budget.perFormatter)
-                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                        .modifier(BudgetTextfieldModifier())
+                        .modifier(TextfieldSelectAllModifier())
                     Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
                         .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
                         .bold()
@@ -299,7 +298,8 @@ struct StackSettingsView: View {
             } else if stack.type == .reserved {
                 HStack {
                     TextField("Reserved Amount", value: $stack.reserved, formatter: budget.curFormatter)
-                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                        .modifier(BudgetTextfieldModifier())
+                        .modifier(TextfieldSelectAllModifier())
                     Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
                         .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
                         .bold()
@@ -308,7 +308,8 @@ struct StackSettingsView: View {
             } else if stack.type == .accrue {
                 HStack {
                     TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter)
-                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                        .modifier(BudgetTextfieldModifier())
+                        .modifier(TextfieldSelectAllModifier())
                     Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
                         .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
                         .bold()
@@ -320,7 +321,8 @@ struct StackSettingsView: View {
                 HStack {
                     Text("Accrue every")
                     TextField("Accrue Frequency", value: $stack.accrueFrequency, format: .number)
-                        .modifier(BudgetTextfieldModifier(color: Color(.secondarySystemBackground)))
+                        .modifier(BudgetTextfieldModifier())
+                        .modifier(TextfieldSelectAllModifier())
                     Picker("Accrue Period", selection: $stack.accruePeriod) {
                         Text("Days").tag(PeriodUnits.Days)
                         Text("Weeks").tag(PeriodUnits.Weeks)
@@ -341,9 +343,6 @@ struct StackSettingsView: View {
                     .padding([.top, .horizontal, .bottom])
             }
         } //second VStack
-//        .background(Color(.systemBackground))
-        .cornerRadius(10)
-//        .padding([.horizontal])
         .onChange(of: stack.name) {
             _ in
             budget.saveBudget()

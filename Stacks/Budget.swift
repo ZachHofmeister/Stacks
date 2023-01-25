@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 class Budget: ObservableObject, Codable {
     var name: String
@@ -273,14 +274,24 @@ struct IncomeEditView: View {
 }
 
 struct BudgetTextfieldModifier: ViewModifier {
-    public var color: Color
+//    public var color: Color
     
     func body(content: Content) -> some View {
         content
             .frame(height:36)
-            .background(color)
+            .background(Color(.tertiarySystemGroupedBackground))
             .cornerRadius(10)
             .multilineTextAlignment(.center)
-//            .padding()
+    }
+}
+
+struct TextfieldSelectAllModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+                if let textField = obj.object as? UITextField {
+                    textField.selectAll(self)
+                }
+            }
     }
 }

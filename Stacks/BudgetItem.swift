@@ -75,15 +75,3 @@ struct BudgetItemEditor: View {
         }
     }
 }
-
-
-//struct IncomePreview: View {
-//    @ObservedObject var income: BudgetItem
-//
-//    var body: some View {
-//        VStack {
-//            Text(income.name)
-//            Text("Total Income: $\(income.totalIncome)")
-//        }
-//    }
-//}

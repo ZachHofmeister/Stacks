@@ -15,14 +15,20 @@ class Budget: ObservableObject, Codable {
     @Published var balances: [Balance]
     @Published var incomes: [BudgetItem]
     @Published var stacks: [BudgetStack]
-//    @Published var preview: Bool = false
     
-    var budgetFileURL: URL = (
-        FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
-    ).appendingPathComponent("budget").appendingPathExtension("plist")
+    // default budget file url is deprecated, since now there are multiple files it will be based on budget name
+//    var budgetFileURL: URL = (
+//        FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
+//    ).appendingPathComponent("budget").appendingPathExtension("plist")
         
     let curFormatter: NumberFormatter = NumberFormatter()
     let perFormatter: NumberFormatter = NumberFormatter()
+    
+    //TODO: this is the new way we are getting budgetFileUrl, but for some reason it is not saving when changed
+    var budgetFileURL: URL {
+        let docsDir = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
+        return docsDir.appendingPathComponent(self.name).appendingPathExtension("plist")
+    }
     
     var totalBalance: Double {
         var result = 0.0
@@ -70,9 +76,23 @@ class Budget: ObservableObject, Codable {
         self.stacks = stacks
         
         initFormatters()
-        loadBudget()
     }
     
+    // init from the URL of a plist file
+    init(from url: URL) {
+        let plistDecoder = PropertyListDecoder()
+        let retrievedBudget = try? Data(contentsOf: url)
+        let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget!)
+        self.name = decodedBudget?.name ?? "Budget"
+        self.desc = decodedBudget?.desc ?? ""
+        self.balances = decodedBudget?.balances ?? []
+        self.incomes = decodedBudget?.incomes ?? []
+        self.stacks = decodedBudget?.stacks ?? []
+        
+        initFormatters()
+    }
+    
+    // required to conform to Codable
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
@@ -82,6 +102,15 @@ class Budget: ObservableObject, Codable {
         stacks = (try? container.decode([BudgetStack].self, forKey: .stacks)) ?? []
         
         initFormatters()
+    }
+    // required to conform to Codable
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(desc, forKey: .desc)
+        try container.encode(balances, forKey: .balances)
+        try container.encode(incomes, forKey: .incomes)
+        try container.encode(stacks, forKey: .stacks)
     }
     
     func initFormatters() {
@@ -94,13 +123,17 @@ class Budget: ObservableObject, Codable {
         perFormatter.isLenient = true
     }
     
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
-        try container.encode(desc, forKey: .desc)
-        try container.encode(balances, forKey: .balances)
-        try container.encode(incomes, forKey: .incomes)
-        try container.encode(stacks, forKey: .stacks)
+    // load data from the URL of a plist file
+    //TODO: This might not be used since there is an init that does the same thing
+    func loadPlist(from url: URL) {
+        let plistDecoder = PropertyListDecoder()
+        let retrievedBudget = try? Data(contentsOf: url)
+        let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget!)
+        self.name = decodedBudget?.name ?? "Budget"
+        self.desc = decodedBudget?.desc ?? ""
+        self.balances = decodedBudget?.balances ?? []
+        self.incomes = decodedBudget?.incomes ?? []
+        self.stacks = decodedBudget?.stacks ?? []
     }
     
     func saveBudget() {
@@ -110,16 +143,26 @@ class Budget: ObservableObject, Codable {
         }
     }
     
-    func loadBudget() {
-        let plistDecoder = PropertyListDecoder()
-        if let retrievedBudget = try? Data(contentsOf: budgetFileURL),
-           let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget) {
+    // returns budget Data in json format
+    func exportJson() -> Data {
+        let jsonEncoder = JSONEncoder()
+        // guard ensures encoding works
+        guard let encodedBudget = try? jsonEncoder.encode(self) else { return Data() }
+        return encodedBudget
+    }
+    
+    // imports budget data from Data in json format
+    func importJson(from data: Data) {
+        let jsonDecoder = JSONDecoder()
+        if let decodedBudget = try? jsonDecoder.decode(Budget.self, from: data) {
             self.name = decodedBudget.name
             self.desc = decodedBudget.desc
             self.balances = decodedBudget.balances
             self.incomes = decodedBudget.incomes
             self.stacks = decodedBudget.stacks
         }
+        // save the newly imported data to the local serialized budget file
+        saveBudget()
     }
     
     func formatCurrency(from num: Double) -> String {
@@ -132,12 +175,22 @@ class Budget: ObservableObject, Codable {
 }
 
 struct BudgetView: View {
-    @StateObject var budget: Budget = Budget()
-//    @State private var isExporting: Bool = false
-//    @State private var isImporting: Bool = false
+    @EnvironmentObject var budget: Budget //= Budget()
+    @State private var isExporting = false
+    @State private var isImporting = false
+    //computed property is a BudgetFile object with latest budget data.
+    private var budgetFile: BudgetFile {
+        return BudgetFile(data: budget.exportJson())
+    }
+    
+//    init(from url: URL?) {
+//        if let url {
+//            budget.loadPlist(from: url)
+//        }
+//    }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 Section {
                     NavigationLink (destination: BalanceEditView()) {
@@ -152,6 +205,19 @@ struct BudgetView: View {
                 ForEach($budget.stacks, id: \.id) {
                     $stack in
                     StackPreView(stack: stack)
+                        .swipeActions(edge: .leading) {
+                            if (stack.type != .overflow) {
+                                Button("Clone") {
+                                    let copy = stack.copy() as! BudgetStack
+                                    self.addStack(copy)
+                                }
+                                .tint(.blue)
+                            } else {
+                                Button("Can't clone overflow") {
+                                }
+                                .tint(.gray)
+                            }
+                        }
                 }
                 .onDelete(perform: self.deleteStack)
                 .onMove(perform: self.moveStack)
@@ -159,6 +225,14 @@ struct BudgetView: View {
             .background(Color(.secondarySystemBackground))
             .navigationTitle("Budget")
             .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {isExporting = true}) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    Button(action: {isImporting = true}) {
+                        Image(systemName: "square.and.arrow.down")
+                    }
+                }
                 ToolbarItemGroup(placement: .bottomBar) {
                     EditButton()
                     Image(systemName: "plus")
@@ -166,10 +240,32 @@ struct BudgetView: View {
                         .foregroundColor(.accentColor)
                 }
             }
+        } //NavigationStack
+//        .environmentObject(budget)
+//        .navigationViewStyle(StackNavigationViewStyle())
+        .fileExporter(isPresented: $isExporting, document: budgetFile, contentType: .json, defaultFilename: budget.name) { result in
+            switch result {
+            case .success(let url):
+                print("Saved to \(url)")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
-        .environmentObject(budget)
-        .navigationViewStyle(StackNavigationViewStyle())
-    }
+        .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json]) {
+            file in
+            do {
+                let fileUrl = try file.get()
+                guard fileUrl.startAccessingSecurityScopedResource() else { return }
+                if let data = try? Data(contentsOf: fileUrl) {
+                    budget.importJson(from: data)
+                }
+                fileUrl.stopAccessingSecurityScopedResource()
+            } catch {
+                print ("error reading")
+                print (error.localizedDescription)
+            }
+        }
+    } //var body
     
     private func deleteStack (at offset: IndexSet) {
         budget.stacks.remove(atOffsets: offset)
@@ -182,8 +278,12 @@ struct BudgetView: View {
             budget.saveBudget()
         }
     }
-    private func addStack () {
+    private func addStack() {
         budget.stacks.append(BudgetStack())
+        budget.saveBudget()
+    }
+    private func addStack(_ stack: BudgetStack) {
+        budget.stacks.append(stack)
         budget.saveBudget()
     }
 }
@@ -273,18 +373,7 @@ struct IncomeEditView: View {
     }
 }
 
-struct BudgetTextfieldModifier: ViewModifier {
-//    public var color: Color
-    
-    func body(content: Content) -> some View {
-        content
-            .frame(height:36)
-            .background(Color(.tertiarySystemGroupedBackground))
-            .cornerRadius(10)
-            .multilineTextAlignment(.center)
-    }
-}
-
+//Modifier for text field to make all text fields select all when tapped
 struct TextfieldSelectAllModifier: ViewModifier {
     func body(content: Content) -> some View {
         content

@@ -47,7 +47,7 @@ struct BalanceEditor: View {
         HStack {
             TextField("Name", text: $balance.name).foregroundColor(.blue)
             TextField("Balance", value: $balance.balance, formatter: budget.curFormatter)
-                .foregroundColor(.green)
+                .foregroundColor(balance.balance >= 0 ? .green : .red)
                 .modifier(TextfieldSelectAllModifier())
         }
         .onChange(of: balance.name) {

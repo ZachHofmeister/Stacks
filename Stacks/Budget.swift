@@ -9,25 +9,24 @@ import Foundation
 import SwiftUI
 import Combine
 
-class Budget: ObservableObject, Codable {
-    var name: String
-    var desc: String
+class Budget: ObservableObject, Codable, Identifiable {
+    var id: UUID //should be const except loadPlist function needs to change
+    @Published var name: String
     @Published var balances: [Balance]
     @Published var incomes: [BudgetItem]
     @Published var stacks: [BudgetStack]
-    
-    // default budget file url is deprecated, since now there are multiple files it will be based on budget name
-//    var budgetFileURL: URL = (
-//        FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
-//    ).appendingPathComponent("budget").appendingPathExtension("plist")
         
     let curFormatter: NumberFormatter = NumberFormatter()
     let perFormatter: NumberFormatter = NumberFormatter()
     
-    //TODO: this is the new way we are getting budgetFileUrl, but for some reason it is not saving when changed
-    var budgetFileURL: URL {
-        let docsDir = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
-        return docsDir.appendingPathComponent(self.name).appendingPathExtension("plist")
+    var budgetUrl: URL {
+        let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
+        return docsUrl.appendingPathComponent(id.uuidString).appendingPathExtension("plist") //uses id as file name
+    }
+    
+    //computed property is a BudgetFile object with latest budget data.
+    var budgetFile: BudgetFile {
+        return BudgetFile(data: exportJson())
     }
     
     var totalBalance: Double {
@@ -65,12 +64,12 @@ class Budget: ObservableObject, Codable {
     }
     
     enum CodingKeys: CodingKey {
-        case name, desc, balances, incomes, stacks
+        case id, name, balances, incomes, stacks
     }
     
-    init(named name: String = "Budget", desc: String = "", balances: [Balance] = [], incomes: [BudgetItem] = [], stacks: [BudgetStack] = []) {
+    init(named name: String = "Budget", balances: [Balance] = [], incomes: [BudgetItem] = [], stacks: [BudgetStack] = []) {
+        self.id = UUID()
         self.name = name
-        self.desc = desc
         self.balances = balances
         self.incomes = incomes
         self.stacks = stacks
@@ -83,8 +82,8 @@ class Budget: ObservableObject, Codable {
         let plistDecoder = PropertyListDecoder()
         let retrievedBudget = try? Data(contentsOf: url)
         let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget!)
+        self.id = decodedBudget?.id ?? UUID()
         self.name = decodedBudget?.name ?? "Budget"
-        self.desc = decodedBudget?.desc ?? ""
         self.balances = decodedBudget?.balances ?? []
         self.incomes = decodedBudget?.incomes ?? []
         self.stacks = decodedBudget?.stacks ?? []
@@ -95,19 +94,19 @@ class Budget: ObservableObject, Codable {
     // required to conform to Codable
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
-        desc = (try? container.decode(String.self, forKey: .desc)) ?? ""
-        balances = (try? container.decode([Balance].self, forKey: .balances)) ?? []
-        incomes = (try? container.decode([BudgetItem].self, forKey: .incomes)) ?? []
-        stacks = (try? container.decode([BudgetStack].self, forKey: .stacks)) ?? []
+        self.id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
+        self.name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
+        self.balances = (try? container.decode([Balance].self, forKey: .balances)) ?? []
+        self.incomes = (try? container.decode([BudgetItem].self, forKey: .incomes)) ?? []
+        self.stacks = (try? container.decode([BudgetStack].self, forKey: .stacks)) ?? []
         
         initFormatters()
     }
     // required to conform to Codable
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
-        try container.encode(desc, forKey: .desc)
         try container.encode(balances, forKey: .balances)
         try container.encode(incomes, forKey: .incomes)
         try container.encode(stacks, forKey: .stacks)
@@ -124,13 +123,12 @@ class Budget: ObservableObject, Codable {
     }
     
     // load data from the URL of a plist file
-    //TODO: This might not be used since there is an init that does the same thing
     func loadPlist(from url: URL) {
         let plistDecoder = PropertyListDecoder()
         let retrievedBudget = try? Data(contentsOf: url)
         let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget!)
+        self.id = decodedBudget?.id ?? UUID()
         self.name = decodedBudget?.name ?? "Budget"
-        self.desc = decodedBudget?.desc ?? ""
         self.balances = decodedBudget?.balances ?? []
         self.incomes = decodedBudget?.incomes ?? []
         self.stacks = decodedBudget?.stacks ?? []
@@ -139,7 +137,7 @@ class Budget: ObservableObject, Codable {
     func saveBudget() {
         let plistEncoder = PropertyListEncoder()
         if let encodedBudget = try? plistEncoder.encode(self) {
-            try? encodedBudget.write(to: budgetFileURL, options: .noFileProtection)
+            try? encodedBudget.write(to: budgetUrl, options: .noFileProtection)
         }
     }
     
@@ -156,7 +154,6 @@ class Budget: ObservableObject, Codable {
         let jsonDecoder = JSONDecoder()
         if let decodedBudget = try? jsonDecoder.decode(Budget.self, from: data) {
             self.name = decodedBudget.name
-            self.desc = decodedBudget.desc
             self.balances = decodedBudget.balances
             self.incomes = decodedBudget.incomes
             self.stacks = decodedBudget.stacks
@@ -176,74 +173,79 @@ class Budget: ObservableObject, Codable {
 
 struct BudgetView: View {
     @EnvironmentObject var budget: Budget //= Budget()
+    @State private var isRenaming = false
     @State private var isExporting = false
     @State private var isImporting = false
-    //computed property is a BudgetFile object with latest budget data.
-    private var budgetFile: BudgetFile {
-        return BudgetFile(data: budget.exportJson())
-    }
-    
-//    init(from url: URL?) {
-//        if let url {
-//            budget.loadPlist(from: url)
-//        }
-//    }
     
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    NavigationLink (destination: BalanceEditView()) {
-                        Text("Total Balance: \(budget.formatCurrency(from: budget.totalBalance))")
-                    }
+        List {
+            Section {
+                NavigationLink (destination: BalanceEditView()) {
+                    Text("Total Balance: \(budget.formatCurrency(from: budget.totalBalance))")
                 }
-                Section {
-                    NavigationLink (destination: IncomeEditView()) {
-                        Text("Total Income: \(budget.formatCurrency(from: budget.totalIncome))")
-                    }
-                }
-                ForEach($budget.stacks, id: \.id) {
-                    $stack in
-                    StackPreView(stack: stack)
-                        .swipeActions(edge: .leading) {
-                            if (stack.type != .overflow) {
-                                Button("Clone") {
-                                    let copy = stack.copy() as! BudgetStack
-                                    self.addStack(copy)
-                                }
-                                .tint(.blue)
-                            } else {
-                                Button("Can't clone overflow") {
-                                }
-                                .tint(.gray)
-                            }
-                        }
-                }
-                .onDelete(perform: self.deleteStack)
-                .onMove(perform: self.moveStack)
             }
-            .background(Color(.secondarySystemBackground))
-            .navigationTitle("Budget")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
+            Section {
+                NavigationLink (destination: IncomeEditView()) {
+                    Text("Total Income: \(budget.formatCurrency(from: budget.totalIncome))")
+                }
+            }
+            ForEach($budget.stacks, id: \.id) {
+                $stack in
+                StackPreView(stack: stack)
+                    .swipeActions(edge: .leading) {
+                        if (stack.type != .overflow) {
+                            Button("Clone") {
+                                let copy = stack.copy() as! BudgetStack
+                                self.cloneStack(from: copy)
+                            }
+                            .tint(.blue)
+                        } else {
+                            Button("Can't clone overflow") {
+                            }
+                            .tint(.gray)
+                        }
+                    }
+            }
+            .onDelete(perform: self.deleteStack)
+            .onMove(perform: self.moveStack)
+        }
+        .background(Color(.secondarySystemBackground))
+        .navigationTitle(budget.name)
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Menu(content: {
+                    Button(action: {isRenaming = true}) {
+                        Label("Rename", systemImage: "rectangle.and.pencil.and.ellipsis")
+                    }
                     Button(action: {isExporting = true}) {
-                        Image(systemName: "square.and.arrow.up")
+                        Label("Export to File", systemImage: "square.and.arrow.up")
                     }
                     Button(action: {isImporting = true}) {
-                        Image(systemName: "square.and.arrow.down")
+                        Label("Import from File", systemImage: "square.and.arrow.down")
                     }
-                }
-                ToolbarItemGroup(placement: .bottomBar) {
-                    EditButton()
-                    Image(systemName: "plus")
-                        .onTapGesture(count: 1, perform: self.addStack)
-                        .foregroundColor(.accentColor)
+                }) {
+                    Image(systemName: "ellipsis.circle")
                 }
             }
-        } //NavigationStack
-//        .environmentObject(budget)
-//        .navigationViewStyle(StackNavigationViewStyle())
-        .fileExporter(isPresented: $isExporting, document: budgetFile, contentType: .json, defaultFilename: budget.name) { result in
+            ToolbarItemGroup(placement: .bottomBar) {
+                EditButton()
+                Image(systemName: "plus")
+                    .onTapGesture(count: 1, perform: self.addStack)
+                    .foregroundColor(.accentColor)
+            }
+        }
+        .alert("Rename Budget", isPresented: $isRenaming, actions: {
+            let oldName = budget.name
+            TextField("Budget name", text: $budget.name)
+            Button("Done", action: {})
+            Button("Cancel", role: .cancel, action: {budget.name = oldName})
+        })
+        .onChange(of: budget.name) {
+            _ in
+            budget.saveBudget()
+//            budget.objectWillChange.send()
+        }
+        .fileExporter(isPresented: $isExporting, document: budget.budgetFile, contentType: .json, defaultFilename: budget.name) { result in
             switch result {
             case .success(let url):
                 print("Saved to \(url)")
@@ -282,7 +284,7 @@ struct BudgetView: View {
         budget.stacks.append(BudgetStack())
         budget.saveBudget()
     }
-    private func addStack(_ stack: BudgetStack) {
+    private func cloneStack(from stack: BudgetStack) {
         budget.stacks.append(stack)
         budget.saveBudget()
     }
@@ -296,6 +298,13 @@ struct BalanceEditView: View {
             ForEach($budget.balances, id: \.id) {
                 $bal in
                 BalanceEditor(balance: bal)
+                    .swipeActions(edge: .leading) {
+                        Button("Clone") {
+                            let copy = bal.copy() as! Balance
+                            self.cloneBalance(from: copy)
+                        }
+                        .tint(.blue)
+                    }
             }
             .onDelete(perform: self.deleteBalance)
             .onMove(perform: self.moveBalance)
@@ -326,6 +335,10 @@ struct BalanceEditView: View {
         budget.balances.append(Balance())
         budget.saveBudget()
     }
+    private func cloneBalance (from balance: Balance) {
+        budget.balances.append(balance)
+        budget.saveBudget()
+    }
 }
 
 //TODO: can this be combined with BudgetItemEditView?
@@ -337,6 +350,13 @@ struct IncomeEditView: View {
             ForEach($budget.incomes, id: \.id) {
                 $bi in
                 BudgetItemEditor(budgetItem: bi)
+                    .swipeActions(edge: .leading) {
+                        Button("Clone") {
+                            let copy = bi.copy() as! BudgetItem
+                            self.cloneIncome(from: copy)
+                        }
+                        .tint(.blue)
+                    }
             }
             .onDelete(perform: self.deleteIncome)
             .onMove(perform: self.moveIncome)
@@ -367,8 +387,8 @@ struct IncomeEditView: View {
         budget.incomes.insert(BudgetItem(), at: 0)
         budget.saveBudget()
     }
-    private func duplicateIncome (at offset: IndexSet) {
-        budget.incomes.insert(BudgetItem(), at: 0)
+    private func cloneIncome (from item: BudgetItem) {
+        budget.incomes.insert(item, at: 0)
         budget.saveBudget()
     }
 }

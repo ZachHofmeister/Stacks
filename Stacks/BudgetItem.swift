@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class BudgetItem: ObservableObject, Identifiable, Codable, Equatable {
+class BudgetItem: ObservableObject, Identifiable, Codable, Equatable, NSCopying {
     var id = UUID()
     @Published var amount: Double
     @Published var date: Date
@@ -18,6 +18,11 @@ class BudgetItem: ObservableObject, Identifiable, Codable, Equatable {
         self.amount = amount
         self.date = date
         self.desc = desc
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = BudgetItem(of: amount, on: Date(), desc: desc)
+        return copy
     }
     
     enum CodingKeys: CodingKey {
@@ -50,7 +55,10 @@ struct BudgetItemEditor: View {
     var body: some View {
         VStack {
             HStack {
-                TextField("Amount", value: $budgetItem.amount, formatter: budget.curFormatter)
+                TextField("Amount", value: $budgetItem.amount, formatter: budget.curFormatter) {
+                    _ in
+                    budget.saveBudget()
+                }
                     .foregroundColor(budgetItem.amount >= 0 ? .green : .red)
                     .modifier(TextfieldSelectAllModifier())
                 DatePicker("Date", selection: $budgetItem.date, displayedComponents: [.date])
@@ -58,18 +66,13 @@ struct BudgetItemEditor: View {
                     .labelsHidden()
             }.frame(height: 30)
             .padding(1)
-            TextField("Description", text: $budgetItem.desc).foregroundColor(.blue)
-        }
-        .onChange(of: budgetItem.amount) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
+            TextField("Description", text: $budgetItem.desc) {
+                _ in
+                budget.saveBudget()
+            }
+            .foregroundColor(.blue)
         }
         .onChange(of: budgetItem.date) {
-            _ in
-            budget.saveBudget()
-        }
-        .onChange(of: budgetItem.desc) {
             _ in
             budget.saveBudget()
         }

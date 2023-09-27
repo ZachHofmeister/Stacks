@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class Balance: ObservableObject, Identifiable, Codable, Equatable {
+class Balance: ObservableObject, Identifiable, Codable, Equatable, NSCopying {
     var id = UUID()
     @Published var name: String
     @Published var balance: Double
@@ -16,6 +16,11 @@ class Balance: ObservableObject, Identifiable, Codable, Equatable {
     init (named name: String = "", of balance: Double = 0.0) {
         self.name = name
         self.balance = balance
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Balance(named: name, of: balance)
+        return copy
     }
     
     enum CodingKeys: CodingKey {
@@ -45,19 +50,17 @@ struct BalanceEditor: View {
     
     var body: some View {
         HStack {
-            TextField("Name", text: $balance.name).foregroundColor(.blue)
-            TextField("Balance", value: $balance.balance, formatter: budget.curFormatter)
-                .foregroundColor(balance.balance >= 0 ? .green : .red)
-                .modifier(TextfieldSelectAllModifier())
-        }
-        .onChange(of: balance.name) {
-            _ in
-            budget.saveBudget()
-        }
-        .onChange(of: balance.balance) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
+            TextField("Name", text: $balance.name) {
+                _ in
+                budget.saveBudget()
+            }
+            .foregroundColor(.blue)
+            TextField("Balance", value: $balance.balance, formatter: budget.curFormatter) {
+                _ in
+                budget.saveBudget()
+            }
+            .foregroundColor(balance.balance >= 0 ? .green : .red)
+            .modifier(TextfieldSelectAllModifier())
         }
     }
 }

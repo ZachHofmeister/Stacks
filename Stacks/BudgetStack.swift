@@ -43,7 +43,6 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
     @Published var color: Color
     @Published var type: StackType
     @Published var percent: Double
-    @Published var reserved: Double
     @Published var accrue: Double
     @Published var accrueStart: Date
     @Published var accrueFrequency: Int
@@ -59,6 +58,24 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         return total
     }
     
+    // All budget items that are increasing
+    var totalAdded: Double {
+        var total = 0.0
+        for item in budgetItems where item.amount > 0 {
+            total += item.amount;
+        }
+        return total
+    }
+    
+    // All budget items that are spending
+    var totalSpent: Double {
+        var total = 0.0
+        for item in budgetItems where item.amount < 0 {
+            total += item.amount;
+        }
+        return total
+    }
+    
     var accruePeriodsElapsed: Int {
         let now = Date()
         let fromToComps = Calendar.current.dateComponents([accruePeriod.toCalComponent()], from: accrueStart, to: now)
@@ -70,7 +87,6 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         color = .random
         type = .percent
         percent = 0.0
-        reserved = 0.0
         accrue = 0.0
         accrueStart = Date()
         accrueFrequency = 1
@@ -79,12 +95,11 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         icon = "dollarsign.circle"
     }
     
-    init(name: String, color: Color, type: StackType, percent: Double, reserved: Double, accrue: Double, accrueStart: Date, accrueFrequency: Int, accruePeriod: PeriodUnits, budgetItems: [BudgetItem], icon: String) {
+    init(name: String, color: Color, type: StackType, percent: Double, accrue: Double, accrueStart: Date, accrueFrequency: Int, accruePeriod: PeriodUnits, budgetItems: [BudgetItem], icon: String) {
         self.name = name
         self.color = color
         self.type = type
         self.percent = percent
-        self.reserved = reserved
         self.accrue = accrue
         self.accrueStart = accrueStart
         self.accrueFrequency = accrueFrequency
@@ -94,12 +109,12 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = BudgetStack(name: name, color: color, type: type, percent: percent, reserved: reserved, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, budgetItems: budgetItems, icon: icon)
+        let copy = BudgetStack(name: name, color: color, type: type, percent: percent, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, budgetItems: budgetItems, icon: icon)
         return copy
     }
     
     enum CodingKeys: CodingKey {
-        case name, color, type, percent, reserved, accrue, accrueStart, accrueFrequency, accruePeriod, budgetItems, icon
+        case name, color, type, percent, accrue, accrueStart, accrueFrequency, accruePeriod, budgetItems, icon
     }
     
     required init(from decoder: Decoder) throws {
@@ -108,7 +123,6 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         color = (try? container.decode(Color.self, forKey: .color)) ?? Color.random
         type = (try? container.decode(StackType.self, forKey: .type)) ?? StackType.percent
         percent = (try? container.decode(Double.self, forKey: .percent)) ?? 0.0
-        reserved = (try? container.decode(Double.self, forKey: .reserved)) ?? 0.0
         accrue = (try? container.decode(Double.self, forKey: .accrue)) ?? 0.0
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
@@ -123,7 +137,6 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         try container.encode(color, forKey: .color)
         try container.encode(type, forKey: .type)
         try container.encode(percent, forKey: .percent)
-        try container.encode(reserved, forKey: .reserved)
         try container.encode(accrue, forKey: .accrue)
         try container.encode(accrueStart, forKey: .accrueStart)
         try container.encode(accrueFrequency, forKey: .accrueFrequency)
@@ -132,23 +145,27 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         try container.encode(icon, forKey: .icon)
     }
     
-    func amount(budget: Budget) -> Double {
+    func baseAmount(budget: Budget) -> Double {
         switch type {
         case .percent:
-            return budget.totalIncome * percent + totalBudgetItems
+            return budget.totalIncome * percent
         case .reserved:
-            return reserved
+            return 0
         case .accrue:
-            return accrue * Double(accruePeriodsElapsed) + totalBudgetItems
+            return accrue * Double(accruePeriodsElapsed)
         case .overflow:
-            var reserved = 0.0
+            var others = 0.0
             for stack in budget.stacks {
                 if stack.type != .overflow {
-                    reserved += stack.amount(budget: budget)
+                    others += stack.balance(budget: budget)
                 }
             }
-            return budget.totalBalance - reserved
+            return budget.totalBalance - others
         }
+    }
+    
+    func balance(budget: Budget) -> Double {
+        return baseAmount(budget: budget) + (type == .overflow ? 0 : totalBudgetItems)
     }
 }
 
@@ -164,24 +181,26 @@ struct StackPreView: View {
                     .padding(6)
                     .foregroundColor(Color.white)
                     .imageScale(.large)
-                    .background(Circle().fill(stack.color)
-                )
+                    .background(Circle().fill(stack.color))
                 Text(stack.name)
-                Spacer()
+//                Spacer()
                 VStack {
                     HStack {
                         Spacer()
-                        Text(budget.formatCurrency(from: stack.amount(budget: budget)))
+                        Text(budget.formatCurrency(from: stack.balance(budget: budget)))
                     }
                     HStack {
                         Spacer()
                         switch stack.type {
                         case .percent:
-                            Text(budget.formatPercent(from: stack.percent)).font(.footnote)
+                            Text(budget.formatPercent(from: stack.percent))
+                                .font(.footnote)
                         case .accrue:
-                            Text("\(budget.formatCurrency(from: stack.accrue)) every \(stack.accrueFrequency) \(stack.accruePeriod.rawValue)").font(.footnote)
+                            Text("\(budget.formatCurrency(from: stack.accrue)) every \(stack.accrueFrequency) \(stack.accruePeriod.rawValue)")
+                                .font(.footnote)
                         default:
-                            Text(stack.type.rawValue).font(.footnote)
+                            Text(stack.type.rawValue)
+                                .font(.footnote)
                         }
                     }
                 }
@@ -193,6 +212,7 @@ struct StackPreView: View {
 struct StackEditorView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
+    @State private var showDetails = false
     
     var body: some View {
         List {
@@ -208,6 +228,13 @@ struct StackEditorView: View {
                 ForEach($stack.budgetItems, id: \.id) {
                     $bi in
                     BudgetItemEditor(budgetItem: bi)
+                        .swipeActions(edge: .leading) {
+                            Button("Clone") {
+                                let copy = bi.copy() as! BudgetItem
+                                self.cloneItem(from: copy)
+                            }
+                            .tint(.blue)
+                        }
                 }
                 .onDelete(perform: self.deleteItem)
                 .onMove(perform: self.moveItem)
@@ -227,7 +254,31 @@ struct StackEditorView: View {
                         .foregroundColor(.accentColor)
                 }
             }
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+//                Menu(content: {
+//
+//                }) {
+//                    Image(systemName: "ellipsis.circle")
+//                }
+                if (stack.type != .overflow) {
+                    Button(action: {showDetails = true}) {
+                        Label("Details", systemImage: "list.bullet.clipboard")
+                    }
+                    .popover(isPresented: $showDetails) {
+                        GeometryReader { geo in
+                            StackDetails(stack: stack)
+                                .padding([.horizontal], geo.size.width/6)
+                        }
+                        .presentationDetents([.medium])
+                        Button("Done") {
+                            showDetails = false
+                        }
+                    }
+                }
+            }
         }
+        
+        
     }
     
     private func deleteItem (at offset: IndexSet) {
@@ -245,6 +296,10 @@ struct StackEditorView: View {
         stack.budgetItems.insert(BudgetItem(), at: 0)
         budget.saveBudget()
     }
+    private func cloneItem (from item: BudgetItem) {
+        stack.budgetItems.insert(item, at: 0)
+        budget.saveBudget()
+    }
 }
 
 struct StackSettingsView: View {
@@ -255,14 +310,17 @@ struct StackSettingsView: View {
         VStack {
             StackIconButton(stack: stack)
             
-            TextField("Stack Name", text: $stack.name)
-                .modifier(BudgetTextfieldModifier())
-                .padding([.top, .horizontal])
+            TextField("Stack Name", text: $stack.name) {
+                _ in
+                budget.saveBudget()
+            }
+            .modifier(BudgetTextfieldModifier())
+            .padding([.top, .horizontal])
             
             Picker("Stack Type", selection: $stack.type) {
                 Text("Percent").tag(StackType.percent)
-                Text("Reserve").tag(StackType.reserved)
                 Text("Accrue").tag(StackType.accrue)
+                Text("Reserve").tag(StackType.reserved)
                 if !budget.hasOverflowStack || stack.type == .overflow {
                     Text("Overflow").tag(StackType.overflow)
                 }
@@ -280,32 +338,12 @@ struct StackSettingsView: View {
                 StackOverflowSettings(stack: stack)
             }
         } //VStack
-        .onChange(of: stack.name) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
-        }
         .onChange(of: stack.color) {
             _ in
             budget.saveBudget()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.type) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.percent) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.reserved) {
-            _ in
-            budget.saveBudget()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.accrue) {
             _ in
             budget.saveBudget()
             budget.objectWillChange.send()
@@ -318,6 +356,11 @@ struct StackSettingsView: View {
         .onChange(of: stack.accrueFrequency) {
             val in
             if (val <= 0) { stack.accrueFrequency = 1 }
+            budget.saveBudget()
+            budget.objectWillChange.send()
+        }
+        .onChange(of: stack.accruePeriod) {
+            _ in
             budget.saveBudget()
             budget.objectWillChange.send()
         }
@@ -368,12 +411,15 @@ struct StackPercentSettings : View {
     
     var body: some View {
         HStack {
-            TextField("Percent", value: $stack.percent, formatter: budget.perFormatter)
-                .modifier(BudgetTextfieldModifier())
-                .modifier(TextfieldSelectAllModifier())
-            Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                .bold()
+            TextField("Percent", value: $stack.percent, formatter: budget.perFormatter) {
+                _ in
+                budget.saveBudget()
+            }
+            .modifier(BudgetTextfieldModifier())
+            .modifier(TextfieldSelectAllModifier())
+            Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+            .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
+            .bold()
         }
         .padding([.horizontal, .bottom])
     }
@@ -384,15 +430,10 @@ struct StackReservedSettings : View {
     @ObservedObject var stack: BudgetStack
     
     var body: some View {
-        HStack {
-            TextField("Reserved Amount", value: $stack.reserved, formatter: budget.curFormatter)
-                .modifier(BudgetTextfieldModifier())
-                .modifier(TextfieldSelectAllModifier())
-            Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                .bold()
-        }
-        .padding([.horizontal, .bottom])
+        Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+        .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
+        .bold()
+        .padding([.top, .horizontal, .bottom])
     }
 }
 
@@ -402,22 +443,25 @@ struct StackAccrueSettings : View {
     
     var body: some View {
         HStack {
-            TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter)
-                .modifier(BudgetTextfieldModifier())
-                .modifier(TextfieldSelectAllModifier())
-            Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-                .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-                .bold()
+            TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter) {
+                _ in
+                budget.saveBudget()
+            }
+            .modifier(BudgetTextfieldModifier())
+            .modifier(TextfieldSelectAllModifier())
+            Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+            .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
+            .bold()
         }
         .padding(.horizontal)
         DatePicker("Starting", selection: $stack.accrueStart, displayedComponents: [.date])
-            .datePickerStyle(.compact)
-            .padding(.horizontal)
+        .datePickerStyle(.compact)
+        .padding(.horizontal)
         HStack {
             Text("Accrue every")
             TextField("Accrue Frequency", value: $stack.accrueFrequency, format: .number)
-                .modifier(BudgetTextfieldModifier())
-                .modifier(TextfieldSelectAllModifier())
+            .modifier(BudgetTextfieldModifier())
+            .modifier(TextfieldSelectAllModifier())
             Picker("Accrue Period", selection: $stack.accruePeriod) {
                 Text("Days").tag(PeriodUnits.Days)
                 Text("Weeks").tag(PeriodUnits.Weeks)
@@ -436,13 +480,57 @@ struct StackOverflowSettings : View {
     @ObservedObject var stack: BudgetStack
     
     var body: some View {
-        Text("\(budget.formatCurrency(from: stack.amount(budget: budget)))")
-            .foregroundColor(stack.amount(budget: budget) >= 0 ? .green : .red)
-            .bold()
-            .padding(.top)
+        Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+        .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
+        .bold()
+        .padding(.top)
         Text("Note: You can only have 1 overflow stack.")
-            .font(.footnote)
-            .padding([.top, .horizontal, .bottom])
+        .font(.footnote)
+        .padding([.top, .horizontal, .bottom])
+    }
+}
+
+struct StackDetails : View {
+    @EnvironmentObject var budget: Budget
+    @ObservedObject var stack: BudgetStack
+    
+    var body: some View {
+        VStack {
+            Text("Details")
+            .font(.largeTitle).padding([.top])
+            if (stack.type == .percent) {
+                StackDetailItem(name: "Total Income", amount: budget.totalIncome)
+                .padding([.top])
+                StackDetailItem(name: "\(budget.formatPercent(from: stack.percent))", amount: stack.baseAmount(budget: budget))
+                .padding([.top])
+            }
+            else if (stack.type == .accrue) {
+                StackDetailItem(name: "Accrued", amount: stack.baseAmount(budget: budget))
+                .padding([.top])
+            }
+            StackDetailItem(name: "Added", amount: stack.totalAdded)
+            .padding([.top])
+            StackDetailItem(name: "Spent", amount: stack.totalSpent)
+            .padding([.top])
+            StackDetailItem(name: "Balance", amount: stack.balance(budget: budget))
+            .padding([.top, .bottom])
+        }
+    }
+}
+
+struct StackDetailItem : View {
+    @EnvironmentObject var budget: Budget
+    let name: String
+    let amount: Double
+    
+    var body: some View {
+        HStack {
+            Text(name)
+            Spacer()
+            Text("\(budget.formatCurrency(from: amount))")
+            .foregroundColor(amount >= 0 ? .green : .red)
+            .bold()
+        }
     }
 }
 

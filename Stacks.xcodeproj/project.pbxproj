@@ -13,6 +13,7 @@
 		9248050A28A176D800AD79C1 /* BudgetStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248050928A176D800AD79C1 /* BudgetStack.swift */; };
 		9286978929C5887E008DD845 /* BudgetFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9286978829C5887E008DD845 /* BudgetFile.swift */; };
 		92884FDD28A443AA0080E722 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92884FDC28A443AA0080E722 /* Extensions.swift */; };
+		929EA48D29C8C6AF008D9853 /* BudgetList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929EA48C29C8C6AF008D9853 /* BudgetList.swift */; };
 		92ABD56228A3432300D0DED2 /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92ABD56128A3432300D0DED2 /* Balance.swift */; };
 		92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610028A0D42E0076FB89 /* StacksApp.swift */; };
 		92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610228A0D42E0076FB89 /* ContentView.swift */; };
@@ -49,6 +50,7 @@
 		9286978729C5857E008DD845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9286978829C5887E008DD845 /* BudgetFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetFile.swift; sourceTree = "<group>"; };
 		92884FDC28A443AA0080E722 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		929EA48C29C8C6AF008D9853 /* BudgetList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetList.swift; sourceTree = "<group>"; };
 		92ABD56128A3432300D0DED2 /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		92F360FD28A0D42E0076FB89 /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				92ABD56128A3432300D0DED2 /* Balance.swift */,
 				92295A7A28B5D2D10096F0E5 /* CodableColor.swift */,
 				9286978829C5887E008DD845 /* BudgetFile.swift */,
+				929EA48C29C8C6AF008D9853 /* BudgetList.swift */,
 			);
 			path = Stacks;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 			files = (
 				9248050A28A176D800AD79C1 /* BudgetStack.swift in Sources */,
 				92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */,
+				929EA48D29C8C6AF008D9853 /* BudgetList.swift in Sources */,
 				92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */,
 				9248050828A176CA00AD79C1 /* BudgetItem.swift in Sources */,
 				9286978929C5887E008DD845 /* BudgetFile.swift in Sources */,

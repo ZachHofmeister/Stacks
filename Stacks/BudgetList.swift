@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-//TODO: This is spaghetti code - instead, should make a wrapper class (called BudgetList?) to track, create, update, delete budget plist files.
 class BudgetList: ObservableObject {
     @Published var urlList: [URL]
     
@@ -54,7 +53,6 @@ struct BudgetListView: View {
                     let budgetName = Budget(from: url).name
                     NavigationLink(destination: BudgetView()
                         .onAppear{budget.loadPlist(from: url)}
-//                        .onAppear{budget.name = "Budget #\(Int.random(in: 1...999))"} //TODO: this also didn't change the name immediately, so it's not a loadPlist problem, but a problem with .onAppear or slow nav title updates. Why does the view remember the name at all?
                     ) {
                         Label(budgetName, systemImage: "book")
                     }
@@ -78,5 +76,12 @@ struct BudgetListView: View {
             }
         }
         .environmentObject(budget)
+    }
+}
+
+// Preview
+struct BudgetListView_Previews: PreviewProvider {
+    static var previews: some View {
+        BudgetListView()
     }
 }

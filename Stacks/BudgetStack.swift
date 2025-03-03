@@ -82,20 +82,18 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
         return 1 + accruePeriod.count(given: fromToComps) / (accrueFrequency == 0 ? 1 : accrueFrequency)
     }
     
-    init() {
-        name = "Stack"
-        color = .random
-        type = .percent
-        percent = 0.0
-        accrue = 0.0
-        accrueStart = Date()
-        accrueFrequency = 1
-        accruePeriod = .Days
-        budgetItems = []
-        icon = "dollarsign.circle"
-    }
-    
-    init(name: String, color: Color, type: StackType, percent: Double, accrue: Double, accrueStart: Date, accrueFrequency: Int, accruePeriod: PeriodUnits, budgetItems: [BudgetItem], icon: String) {
+    init(
+        name: String = "Stack",
+        color: Color = .random,
+        type: StackType = .percent,
+        percent: Double = 0.0,
+        accrue: Double = 0.0,
+        accrueStart: Date = Date(),
+        accrueFrequency: Int = 1,
+        accruePeriod: PeriodUnits = .Days,
+        budgetItems: [BudgetItem] = [],
+        icon: String = "dollarsign.circle"
+    ){
         self.name = name
         self.color = color
         self.type = type
@@ -169,10 +167,10 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
     }
 }
 
+// How the stack appears in the budget stack list
 struct StackPreView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
-//    @State private var editing = false
     
     var body: some View {
         NavigationLink(destination: StackEditorView(stack: stack)) {
@@ -183,7 +181,6 @@ struct StackPreView: View {
                     .imageScale(.large)
                     .background(Circle().fill(stack.color))
                 Text(stack.name)
-//                Spacer()
                 VStack {
                     HStack {
                         Spacer()
@@ -209,6 +206,7 @@ struct StackPreView: View {
     }
 }
 
+// Editor for the details of the stack
 struct StackEditorView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -221,7 +219,6 @@ struct StackEditorView: View {
                 StackSettingsView(stack: stack)
             }
             .listRowInsets(EdgeInsets())
-            
             
             //List of budget items
             if stack.type != .overflow {
@@ -302,6 +299,7 @@ struct StackEditorView: View {
     }
 }
 
+// Settings section for various stack types
 struct StackSettingsView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -372,6 +370,7 @@ struct StackSettingsView: View {
     }
 }
 
+//Stack icon with colored background and symbol
 struct StackIconButton : View {
     @ObservedObject var stack: BudgetStack
     @State private var iconPickerOpen = false
@@ -405,6 +404,7 @@ struct StackIconButton : View {
     }
 }
 
+//Settings unique to percent stacks
 struct StackPercentSettings : View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -416,7 +416,7 @@ struct StackPercentSettings : View {
                 budget.saveBudget()
             }
             .modifier(BudgetTextfieldModifier())
-            .modifier(TextfieldSelectAllModifier())
+//            .modifier(TextfieldSelectAllModifier())
             Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
             .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
             .bold()
@@ -425,6 +425,7 @@ struct StackPercentSettings : View {
     }
 }
 
+//Settings unique to reserved stacks
 struct StackReservedSettings : View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -437,6 +438,7 @@ struct StackReservedSettings : View {
     }
 }
 
+//Settings unique to accruing stacks
 struct StackAccrueSettings : View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -448,7 +450,7 @@ struct StackAccrueSettings : View {
                 budget.saveBudget()
             }
             .modifier(BudgetTextfieldModifier())
-            .modifier(TextfieldSelectAllModifier())
+//            .modifier(TextfieldSelectAllModifier())
             Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
             .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
             .bold()
@@ -461,7 +463,7 @@ struct StackAccrueSettings : View {
             Text("Accrue every")
             TextField("Accrue Frequency", value: $stack.accrueFrequency, format: .number)
             .modifier(BudgetTextfieldModifier())
-            .modifier(TextfieldSelectAllModifier())
+//            .modifier(TextfieldSelectAllModifier())
             Picker("Accrue Period", selection: $stack.accruePeriod) {
                 Text("Days").tag(PeriodUnits.Days)
                 Text("Weeks").tag(PeriodUnits.Weeks)
@@ -475,6 +477,7 @@ struct StackAccrueSettings : View {
     }
 }
 
+//Settings display unique to the overflow stack
 struct StackOverflowSettings : View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -490,6 +493,7 @@ struct StackOverflowSettings : View {
     }
 }
 
+//Stats for a stack
 struct StackDetails : View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: BudgetStack
@@ -518,6 +522,7 @@ struct StackDetails : View {
     }
 }
 
+//Individual items formatted for the stack details
 struct StackDetailItem : View {
     @EnvironmentObject var budget: Budget
     let name: String
@@ -542,5 +547,23 @@ struct BudgetTextfieldModifier: ViewModifier {
             .background(Color(.tertiarySystemGroupedBackground))
             .cornerRadius(10)
             .multilineTextAlignment(.center)
+    }
+}
+
+// Preview
+struct BudgetStack_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            BudgetView()
+        }.environmentObject(Budget(
+            balances: [Balance(of: 1500)],
+            incomes: [BudgetItem(of: 2000)],
+            stacks: [
+                BudgetStack(name: "test1", color: .red, type: .percent, percent: 0.1),
+                BudgetStack(name: "test1", color: .green, type: .accrue, accrue: 20),
+                BudgetStack(name: "test1", color: .blue, type: .reserved, budgetItems: [BudgetItem(of: 100)]),
+                BudgetStack(name: "test1", color: .yellow, type: .overflow)
+            ]
+        ))
     }
 }

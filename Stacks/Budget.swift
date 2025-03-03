@@ -172,10 +172,11 @@ class Budget: ObservableObject, Codable, Identifiable {
 }
 
 struct BudgetView: View {
-    @EnvironmentObject var budget: Budget //= Budget()
+    @EnvironmentObject var budget: Budget
     @State private var isRenaming = false
     @State private var isExporting = false
     @State private var isImporting = false
+    @State private var previewIncome: Double = 0.0
     
     var body: some View {
         List {
@@ -208,6 +209,13 @@ struct BudgetView: View {
             }
             .onDelete(perform: self.deleteStack)
             .onMove(perform: self.moveStack)
+//            Section {
+//                VStack {
+//                    Text("Breakdown").font(.headline)
+//                    TextField("Preview income", value: $previewIncome, formatter: budget.curFormatter)
+//                    .foregroundColor(previewIncome >= 0 ? .green : .red)
+//                }
+//            }
         }
         .background(Color(.secondarySystemBackground))
         .navigationTitle(budget.name)
@@ -272,7 +280,6 @@ struct BudgetView: View {
     private func deleteStack (at offset: IndexSet) {
         budget.stacks.remove(atOffsets: offset)
         budget.saveBudget()
-        budget.objectWillChange.send()
     }
     private func moveStack (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
@@ -344,16 +351,15 @@ struct BalanceEditView: View {
 //TODO: can this be combined with BudgetItemEditView?
 struct IncomeEditView: View {
     @EnvironmentObject var budget: Budget
-    
+        
     var body: some View {
         List {
             ForEach($budget.incomes, id: \.id) {
-                $bi in
-                BudgetItemEditor(budgetItem: bi)
+                $item in
+                BudgetItemEditor(budgetItem: item)
                     .swipeActions(edge: .leading) {
                         Button("Clone") {
-                            let copy = bi.copy() as! BudgetItem
-                            self.cloneIncome(from: copy)
+                            self.cloneIncome(from: item)
                         }
                         .tint(.blue)
                     }
@@ -383,24 +389,35 @@ struct IncomeEditView: View {
             budget.saveBudget()
         }
     }
-    private func addIncome () {
+    public func addIncome () {
         budget.incomes.insert(BudgetItem(), at: 0)
         budget.saveBudget()
     }
     private func cloneIncome (from item: BudgetItem) {
-        budget.incomes.insert(item, at: 0)
+        let copy = item.copy() as! BudgetItem
+        budget.incomes.insert(copy, at: 0)
         budget.saveBudget()
     }
 }
 
 //Modifier for text field to make all text fields select all when tapped
-struct TextfieldSelectAllModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
-                if let textField = obj.object as? UITextField {
-                    textField.selectAll(self)
-                }
-            }
+//If this can be achieved better it should, otherwise this is dumb and done
+//struct TextfieldSelectAllModifier: ViewModifier {
+//    func body(content: Content) -> some View {
+//        content
+//            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+//                if let textField = obj.object as? UITextField {
+//                    textField.selectAll(self)
+//                }
+//            }
+//    }
+//}
+
+// Preview
+struct BudgetView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            BudgetView().environmentObject(Budget())
+        }
     }
 }

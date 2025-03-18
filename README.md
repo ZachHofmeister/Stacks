@@ -6,5 +6,4 @@ Stacks lets you record your current account balances and income, and create spen
 
 It is designed to be customizable to fit the way you want to budget and help you track what you're spending on.
 
-#### Demo
-![stacks](https://github.com/user-attachments/assets/ca0353de-d431-49dc-a390-0a6db1a4b465)
+![Stacks](https://github.com/user-attachments/assets/e87efdee-e524-48b5-b9cd-a34c6ff78a56)

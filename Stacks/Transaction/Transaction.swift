@@ -1,5 +1,5 @@
 //
-//  BudgetItem.swift
+//  Transaction.swift
 //  Stacks
 //
 //  Created by Zach Hofmeister on 8/8/22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BudgetItem: ObservableObject, Identifiable, Codable, Equatable, NSCopying {
+class Transaction: ObservableObject, Identifiable, Codable, Equatable, NSCopying {
     var id = UUID()
     @Published var amount: Double
     @Published var date: Date
@@ -20,7 +20,7 @@ class BudgetItem: ObservableObject, Identifiable, Codable, Equatable, NSCopying 
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = BudgetItem(of: amount, on: Date(), desc: desc)
+        let copy = Transaction(of: amount, on: Date(), desc: desc)
         return copy
     }
     
@@ -42,7 +42,7 @@ class BudgetItem: ObservableObject, Identifiable, Codable, Equatable, NSCopying 
         try container.encode(desc, forKey: .desc)
     }
     
-    static func == (lhs: BudgetItem, rhs: BudgetItem) -> Bool {
+    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
         return lhs.id == rhs.id && lhs.amount == rhs.amount && lhs.date == rhs.date && lhs.desc == rhs.desc
     }
 }

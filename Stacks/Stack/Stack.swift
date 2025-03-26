@@ -46,7 +46,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     @Published var accrueStart: Date
     @Published var accrueFrequency: Int
     @Published var accruePeriod: PeriodUnits
-    @Published var budgetItems: [BudgetItem]
+    @Published var budgetItems: [Transaction]
     @Published var icon: String
     
     var totalBudgetItems: Double {
@@ -90,7 +90,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart: Date = Date(),
         accrueFrequency: Int = 1,
         accruePeriod: PeriodUnits = .Days,
-        budgetItems: [BudgetItem] = [],
+        budgetItems: [Transaction] = [],
         icon: String = "dollarsign.circle"
     ){
         self.name = name
@@ -124,7 +124,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
         accruePeriod = (try? container.decode(PeriodUnits.self, forKey: .accruePeriod)) ?? PeriodUnits.Days
-        budgetItems = (try? container.decode([BudgetItem].self, forKey: .budgetItems)) ?? []
+        budgetItems = (try? container.decode([Transaction].self, forKey: .budgetItems)) ?? []
         icon = (try? container.decode(String.self, forKey: .icon)) ?? "dollarsign.circle"
     }
     

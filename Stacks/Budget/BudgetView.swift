@@ -192,7 +192,7 @@ struct IncomeEditView: View {
         List {
             ForEach($budget.incomes, id: \.id) {
                 $item in
-                BudgetItemView(budgetItem: item)
+                TransactionView(transaction: item)
                     .swipeActions(edge: .leading) {
                         Button("Clone") {
                             self.cloneIncome(from: item)
@@ -226,11 +226,11 @@ struct IncomeEditView: View {
         }
     }
     public func addIncome () {
-        budget.incomes.insert(BudgetItem(), at: 0)
+        budget.incomes.insert(Transaction(), at: 0)
         budget.saveBudget()
     }
-    private func cloneIncome (from item: BudgetItem) {
-        let copy = item.copy() as! BudgetItem
+    private func cloneIncome (from item: Transaction) {
+        let copy = item.copy() as! Transaction
         budget.incomes.insert(copy, at: 0)
         budget.saveBudget()
     }

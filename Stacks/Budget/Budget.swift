@@ -12,7 +12,7 @@ class Budget: ObservableObject, Codable, Identifiable {
     var id: UUID //should be const except loadPlist function needs to change
     @Published var name: String
     @Published var balances: [Balance]
-    @Published var incomes: [BudgetItem]
+    @Published var incomes: [Transaction]
     @Published var stacks: [Stack]
         
     let curFormatter: NumberFormatter = NumberFormatter()
@@ -66,7 +66,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         case id, name, balances, incomes, stacks
     }
     
-    init(named name: String = "Budget", balances: [Balance] = [], incomes: [BudgetItem] = [], stacks: [Stack] = []) {
+    init(named name: String = "Budget", balances: [Balance] = [], incomes: [Transaction] = [], stacks: [Stack] = []) {
         self.id = UUID()
         self.name = name
         self.balances = balances
@@ -96,7 +96,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
         self.name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
         self.balances = (try? container.decode([Balance].self, forKey: .balances)) ?? []
-        self.incomes = (try? container.decode([BudgetItem].self, forKey: .incomes)) ?? []
+        self.incomes = (try? container.decode([Transaction].self, forKey: .incomes)) ?? []
         self.stacks = (try? container.decode([Stack].self, forKey: .stacks)) ?? []
         
         initFormatters()

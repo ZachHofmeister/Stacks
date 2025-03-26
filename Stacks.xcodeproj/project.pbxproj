@@ -57,7 +57,7 @@
 		92553BD52D93C8AC00E28C39 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		92553BD62D93C8C700E28C39 /* Balance */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Balance; sourceTree = "<group>"; };
 		92553BD92D93C9B500E28C39 /* Stack */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Stack; sourceTree = "<group>"; };
-		92553BE02D93CBFD00E28C39 /* BudgetItem */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BudgetItem; sourceTree = "<group>"; };
+		92553BE02D93CBFD00E28C39 /* Transaction */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Transaction; sourceTree = "<group>"; };
 		92553BE32D93CCA600E28C39 /* Budget */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Budget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -117,7 +117,7 @@
 				92F3610428A0D4320076FB89 /* Assets.xcassets */,
 				92F3610628A0D4320076FB89 /* Preview Content */,
 				92553BE32D93CCA600E28C39 /* Budget */,
-				92553BE02D93CBFD00E28C39 /* BudgetItem */,
+				92553BE02D93CBFD00E28C39 /* Transaction */,
 				92553BD92D93C9B500E28C39 /* Stack */,
 				92553BD52D93C8AC00E28C39 /* Extensions */,
 				92553BD62D93C8C700E28C39 /* Balance */,
@@ -174,7 +174,7 @@
 				92553BD52D93C8AC00E28C39 /* Extensions */,
 				92553BD62D93C8C700E28C39 /* Balance */,
 				92553BD92D93C9B500E28C39 /* Stack */,
-				92553BE02D93CBFD00E28C39 /* BudgetItem */,
+				92553BE02D93CBFD00E28C39 /* Transaction */,
 				92553BE32D93CCA600E28C39 /* Budget */,
 			);
 			name = Stacks;

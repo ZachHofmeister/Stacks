@@ -26,10 +26,10 @@ struct StackEditorView: View {
             if stack.type != .overflow {
                 ForEach($stack.budgetItems, id: \.id) {
                     $bi in
-                    BudgetItemView(budgetItem: bi)
+                    TransactionView(transaction: bi)
                         .swipeActions(edge: .leading) {
                             Button("Clone") {
-                                let copy = bi.copy() as! BudgetItem
+                                let copy = bi.copy() as! Transaction
                                 self.cloneItem(from: copy)
                             }
                             .tint(.blue)
@@ -92,10 +92,10 @@ struct StackEditorView: View {
         }
     }
     private func addItem () {
-        stack.budgetItems.insert(BudgetItem(), at: 0)
+        stack.budgetItems.insert(Transaction(), at: 0)
         budget.saveBudget()
     }
-    private func cloneItem (from item: BudgetItem) {
+    private func cloneItem (from item: Transaction) {
         stack.budgetItems.insert(item, at: 0)
         budget.saveBudget()
     }
@@ -359,11 +359,11 @@ struct StackEditorView_Previews: PreviewProvider {
             BudgetView()
         }.environmentObject(Budget(
             balances: [Balance(of: 1500)],
-            incomes: [BudgetItem(of: 2000)],
+            incomes: [Transaction(of: 2000)],
             stacks: [
                 Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
                 Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-                Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [BudgetItem(of: 100)]),
+                Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
                 Stack(name: "test1", color: .yellow, type: .overflow)
             ]
         ))

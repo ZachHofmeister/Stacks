@@ -1,5 +1,5 @@
 //
-//  BudgetStack.swift
+//  Stack.swift
 //  Stacks
 //
 //  Created by Zach Hofmeister on 8/8/22.
@@ -37,7 +37,7 @@ enum PeriodUnits: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
+class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     var id = UUID()
     @Published var name: String
     @Published var color: Color
@@ -107,7 +107,7 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = BudgetStack(name: name, color: color, type: type, percent: percent, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, budgetItems: budgetItems, icon: icon)
+        let copy = Stack(name: name, color: color, type: type, percent: percent, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, budgetItems: budgetItems, icon: icon)
         return copy
     }
     
@@ -170,7 +170,7 @@ class BudgetStack: ObservableObject, Identifiable, Codable, NSCopying {
 // How the stack appears in the budget stack list
 struct StackPreView: View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         NavigationLink(destination: StackEditorView(stack: stack)) {
@@ -209,7 +209,7 @@ struct StackPreView: View {
 // Editor for the details of the stack
 struct StackEditorView: View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     @State private var showDetails = false
     
     var body: some View {
@@ -302,7 +302,7 @@ struct StackEditorView: View {
 // Settings section for various stack types
 struct StackSettingsView: View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         VStack {
@@ -372,7 +372,7 @@ struct StackSettingsView: View {
 
 //Stack icon with colored background and symbol
 struct StackIconButton : View {
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     @State private var iconPickerOpen = false
     
     var body: some View {
@@ -407,7 +407,7 @@ struct StackIconButton : View {
 //Settings unique to percent stacks
 struct StackPercentSettings : View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         HStack {
@@ -428,7 +428,7 @@ struct StackPercentSettings : View {
 //Settings unique to reserved stacks
 struct StackReservedSettings : View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
@@ -441,7 +441,7 @@ struct StackReservedSettings : View {
 //Settings unique to accruing stacks
 struct StackAccrueSettings : View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         HStack {
@@ -480,7 +480,7 @@ struct StackAccrueSettings : View {
 //Settings display unique to the overflow stack
 struct StackOverflowSettings : View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
@@ -496,7 +496,7 @@ struct StackOverflowSettings : View {
 //Stats for a stack
 struct StackDetails : View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: BudgetStack
+    @ObservedObject var stack: Stack
     
     var body: some View {
         VStack {
@@ -559,10 +559,10 @@ struct BudgetStack_Previews: PreviewProvider {
             balances: [Balance(of: 1500)],
             incomes: [BudgetItem(of: 2000)],
             stacks: [
-                BudgetStack(name: "test1", color: .red, type: .percent, percent: 0.1),
-                BudgetStack(name: "test1", color: .green, type: .accrue, accrue: 20),
-                BudgetStack(name: "test1", color: .blue, type: .reserved, budgetItems: [BudgetItem(of: 100)]),
-                BudgetStack(name: "test1", color: .yellow, type: .overflow)
+                Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
+                Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
+                Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [BudgetItem(of: 100)]),
+                Stack(name: "test1", color: .yellow, type: .overflow)
             ]
         ))
     }

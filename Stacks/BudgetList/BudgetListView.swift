@@ -47,8 +47,6 @@ struct BudgetListView: View {
 }
 
 // Preview
-struct BudgetListView_Previews: PreviewProvider {
-    static var previews: some View {
-        BudgetListView()
-    }
+#Preview {
+    BudgetListView()
 }

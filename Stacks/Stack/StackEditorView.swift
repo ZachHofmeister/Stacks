@@ -353,19 +353,23 @@ struct BudgetTextfieldModifier: ViewModifier {
 }
 
 // Preview
-struct StackEditorView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            BudgetView()
-        }.environmentObject(Budget(
-            balances: [Balance(of: 1500)],
-            incomes: [Transaction(of: 2000)],
-            stacks: [
-                Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
-                Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-                Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
-                Stack(name: "test1", color: .yellow, type: .overflow)
-            ]
-        ))
-    }
+#Preview {
+    let budget = Budget(
+        balances: [Balance(of: 1500)],
+        incomes: [Transaction(of: 2000)],
+        stacks: [
+            Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
+            Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
+            Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .yellow, type: .overflow)
+        ]);
+    NavigationStack {
+//            List {
+//                ForEach (budget.stacks, id: \.id) {
+//                    stack in
+//                    StackEditorView(stack: stack)
+//                }
+//            }
+        StackEditorView(stack: budget.stacks[0])
+    }.environmentObject(budget)
 }

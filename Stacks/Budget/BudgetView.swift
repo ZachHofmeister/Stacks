@@ -252,6 +252,15 @@ struct IncomeEditView: View {
 // Preview
 #Preview {
     NavigationStack {
-        BudgetView().environmentObject(Budget())
-    }
+        BudgetView()
+    }.environmentObject(Budget(
+        balances: [Balance(of: 1500)],
+        incomes: [Transaction(of: 2000)],
+        stacks: [
+            Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
+            Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
+            Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .yellow, type: .overflow)
+        ]
+    ))
 }

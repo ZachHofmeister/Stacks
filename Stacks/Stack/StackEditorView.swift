@@ -12,36 +12,18 @@ import SymbolPicker
 struct StackEditorView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: Stack
-    @State private var showDetails = false
     
     var body: some View {
         List {
             //Header, edit settings of stack
-            Section {
-                StackSettingsView(stack: stack)
-            }
+            Section { StackSettingsView(stack: stack) }
             .listRowInsets(EdgeInsets())
             
             //List of budget items
             if stack.type != .overflow {
-                ForEach($stack.budgetItems, id: \.id) {
-                    $bi in
-                    TransactionView(transaction: bi)
-                        .swipeActions(edge: .leading) {
-                            Button("Clone") {
-                                let copy = bi.copy() as! Transaction
-                                self.cloneItem(from: copy)
-                            }
-                            .tint(.blue)
-                        }
-                }
-                .onDelete(perform: self.deleteItem)
-                .onMove(perform: self.moveItem)
-                .cornerRadius(10)
-                .padding([.horizontal])
+                TransactionList(stack: stack)
             }
-        } //main vstack
-//        .environmentObject(budget)
+        } // List
         .navigationTitle("Stack Info")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -52,52 +34,76 @@ struct StackEditorView: View {
                         .onTapGesture(count: 1, perform: self.addItem)
                         .foregroundColor(.accentColor)
                 }
-            }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-//                Menu(content: {
-//
-//                }) {
-//                    Image(systemName: "ellipsis.circle")
-//                }
-                if (stack.type != .overflow) {
-                    Button(action: {showDetails = true}) {
-                        Label("Details", systemImage: "list.bullet.clipboard")
-                    }
-                    .popover(isPresented: $showDetails) {
-                        GeometryReader { geo in
-                            StackDetails(stack: stack)
-                                .padding([.horizontal], geo.size.width/6)
-                        }
-                        .presentationDetents([.medium])
-                        Button("Done") {
-                            showDetails = false
-                        }
-                    }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    StackDetailsButton(stack: stack)
                 }
             }
         }
-        
-        
+    }
+    
+    private func addItem () {
+        stack.transactions.insert(Transaction(), at: 0)
+        budget.saveBudget()
+    }
+}
+
+struct TransactionList: View {
+    @EnvironmentObject var budget: Budget
+    @ObservedObject var stack: Stack
+    
+    var body: some View {
+        ForEach($stack.transactions, id: \.id) {
+            $tr in
+            TransactionView(transaction: tr)
+                .swipeActions(edge: .leading) {
+                    Button("Clone") {
+                        let copy = tr.copy() as! Transaction
+                        self.cloneItem(from: copy)
+                    }
+                    .tint(.blue)
+                }
+        }
+        .onDelete(perform: self.deleteItem)
+        .onMove(perform: self.moveItem)
+        .cornerRadius(10)
+        .padding([.horizontal])
     }
     
     private func deleteItem (at offset: IndexSet) {
-        stack.budgetItems.remove(atOffsets: offset)
+        stack.transactions.remove(atOffsets: offset)
         budget.saveBudget()
         budget.objectWillChange.send()
     }
     private func moveItem (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
-            stack.budgetItems.move(fromOffsets: offset, toOffset: index)
+            stack.transactions.move(fromOffsets: offset, toOffset: index)
             budget.saveBudget()
         }
     }
-    private func addItem () {
-        stack.budgetItems.insert(Transaction(), at: 0)
+    private func cloneItem (from item: Transaction) {
+        stack.transactions.insert(item, at: 0)
         budget.saveBudget()
     }
-    private func cloneItem (from item: Transaction) {
-        stack.budgetItems.insert(item, at: 0)
-        budget.saveBudget()
+}
+
+struct StackDetailsButton: View {
+    @ObservedObject var stack: Stack
+    @State private var showDetails = false
+    
+    var body: some View {
+        Button(action: {showDetails = true}) {
+            Label("Details", systemImage: "list.bullet.clipboard")
+        }
+        .popover(isPresented: $showDetails) {
+            GeometryReader { geo in
+                StackDetails(stack: stack)
+                    .padding([.horizontal], geo.size.width/6)
+            }
+            .presentationDetents([.medium])
+            Button("Done") {
+                showDetails = false
+            }
+        }
     }
 }
 
@@ -360,8 +366,8 @@ struct BudgetTextfieldModifier: ViewModifier {
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
-            Stack(name: "test1", color: .yellow, type: .overflow)
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
+//            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {
 //            List {

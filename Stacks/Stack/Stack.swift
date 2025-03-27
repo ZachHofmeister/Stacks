@@ -46,12 +46,12 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     @Published var accrueStart: Date
     @Published var accrueFrequency: Int
     @Published var accruePeriod: PeriodUnits
-    @Published var budgetItems: [Transaction]
+    @Published var transactions: [Transaction]
     @Published var icon: String
     
-    var totalBudgetItems: Double {
+    var totalTransactions: Double {
         var total = 0.0
-        for item in budgetItems {
+        for item in transactions {
             total += item.amount
         }
         return total
@@ -60,7 +60,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are increasing
     var totalAdded: Double {
         var total = 0.0
-        for item in budgetItems where item.amount > 0 {
+        for item in transactions where item.amount > 0 {
             total += item.amount;
         }
         return total
@@ -69,7 +69,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are spending
     var totalSpent: Double {
         var total = 0.0
-        for item in budgetItems where item.amount < 0 {
+        for item in transactions where item.amount < 0 {
             total += item.amount;
         }
         return total
@@ -90,7 +90,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart: Date = Date(),
         accrueFrequency: Int = 1,
         accruePeriod: PeriodUnits = .Days,
-        budgetItems: [Transaction] = [],
+        transactions: [Transaction] = [],
         icon: String = "dollarsign.circle"
     ){
         self.name = name
@@ -101,17 +101,17 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         self.accrueStart = accrueStart
         self.accrueFrequency = accrueFrequency
         self.accruePeriod = accruePeriod
-        self.budgetItems = budgetItems
+        self.transactions = transactions
         self.icon = icon
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = Stack(name: name, color: color, type: type, percent: percent, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, budgetItems: budgetItems, icon: icon)
+        let copy = Stack(name: name, color: color, type: type, accrue: accrue, accrueStart: accrueStart, accrueFrequency: accrueFrequency, accruePeriod: accruePeriod, transactions: transactions, icon: icon)
         return copy
     }
     
     enum CodingKeys: CodingKey {
-        case name, color, type, percent, accrue, accrueStart, accrueFrequency, accruePeriod, budgetItems, icon
+        case name, color, type, percent, accrue, accrueStart, accrueFrequency, accruePeriod, transactions, icon
     }
     
     required init(from decoder: Decoder) throws {
@@ -124,7 +124,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
         accruePeriod = (try? container.decode(PeriodUnits.self, forKey: .accruePeriod)) ?? PeriodUnits.Days
-        budgetItems = (try? container.decode([Transaction].self, forKey: .budgetItems)) ?? []
+        transactions = (try? container.decode([Transaction].self, forKey: .transactions)) ?? []
         icon = (try? container.decode(String.self, forKey: .icon)) ?? "dollarsign.circle"
     }
     
@@ -138,7 +138,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         try container.encode(accrueStart, forKey: .accrueStart)
         try container.encode(accrueFrequency, forKey: .accrueFrequency)
         try container.encode(accruePeriod, forKey: .accruePeriod)
-        try container.encode(budgetItems, forKey: .budgetItems)
+        try container.encode(transactions, forKey: .transactions)
         try container.encode(icon, forKey: .icon)
     }
     
@@ -162,6 +162,6 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     }
     
     func balance(budget: Budget) -> Double {
-        return baseAmount(budget: budget) + (type == .overflow ? 0 : totalBudgetItems)
+        return baseAmount(budget: budget) + (type == .overflow ? 0 : totalTransactions)
     }
 }

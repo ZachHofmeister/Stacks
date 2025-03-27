@@ -39,7 +39,7 @@ struct TransactionView: View {
 }
 
 // Preview
-struct BudgetItemView_Previews: PreviewProvider {
+struct TransactionView_Previews: PreviewProvider {
     static var previews: some View {
         List {
             TransactionView(transaction: Transaction(of: 100, desc: "Payday" ))

@@ -184,7 +184,7 @@ struct BalanceEditView: View {
     }
 }
 
-//TODO: can this be combined with BudgetItemEditView?
+//TODO: can this be combined with TransactionView?
 struct IncomeEditView: View {
     @EnvironmentObject var budget: Budget
         
@@ -259,7 +259,7 @@ struct IncomeEditView: View {
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, budgetItems: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
             Stack(name: "test1", color: .yellow, type: .overflow)
         ]
     ))

@@ -13,7 +13,7 @@ struct StackPreView: View {
     @ObservedObject var stack: Stack
     
     var body: some View {
-        NavigationLink(destination: StackEditorView(stack: stack)) {
+        NavigationLink(destination: StackEditor(stack: stack)) {
             HStack {
                 Image(systemName: stack.icon)
                     .padding(6)

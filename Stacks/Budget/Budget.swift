@@ -133,11 +133,12 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.stacks = decodedBudget?.stacks ?? []
     }
     
-    func saveBudget() {
+    func save(change: Bool = true) {
         let plistEncoder = PropertyListEncoder()
         if let encodedBudget = try? plistEncoder.encode(self) {
             try? encodedBudget.write(to: budgetUrl, options: .noFileProtection)
         }
+        if (change) { self.objectWillChange.send() }
     }
     
     // returns budget Data in json format
@@ -158,7 +159,7 @@ class Budget: ObservableObject, Codable, Identifiable {
             self.stacks = decodedBudget.stacks
         }
         // save the newly imported data to the local serialized budget file
-        saveBudget()
+        save()
     }
     
     func formatCurrency(from num: Double) -> String {

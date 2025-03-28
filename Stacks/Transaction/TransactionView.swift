@@ -14,26 +14,16 @@ struct TransactionView: View {
     var body: some View {
         VStack {
             HStack {
-                TextField("Amount", value: $transaction.amount, formatter: budget.curFormatter) {
-                    _ in
-                    budget.saveBudget()
-                }
+                TextField("Amount", value: $transaction.amount, formatter: budget.curFormatter) { budget.save() }
                     .foregroundColor(transaction.amount >= 0 ? .green : .red)
-//                    .modifier(TextfieldSelectAllModifier())
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
+                    .onChange(of: transaction.date) { _ in budget.save() }
                     .datePickerStyle(.compact)
                     .labelsHidden()
             }.frame(height: 30)
             .padding(1)
-            TextField("Description", text: $transaction.desc) {
-                _ in
-                budget.saveBudget()
-            }
+            TextField("Description", text: $transaction.desc) { budget.save() }
             .foregroundColor(.blue)
-        }
-        .onChange(of: transaction.date) {
-            _ in
-            budget.saveBudget()
         }
     }
 }

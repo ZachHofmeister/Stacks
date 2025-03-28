@@ -9,14 +9,14 @@ import SwiftUI
 import SymbolPicker
 
 // Editor for the details of the stack
-struct StackEditorView: View {
+struct StackEditor: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: Stack
     
     var body: some View {
         List {
             //Header, edit settings of stack
-            Section { StackSettingsView(stack: stack) }
+            Section { StackSettings(stack: stack) }
             .listRowInsets(EdgeInsets())
             
             //List of budget items
@@ -43,46 +43,7 @@ struct StackEditorView: View {
     
     private func addItem () {
         stack.transactions.insert(Transaction(), at: 0)
-        budget.saveBudget()
-    }
-}
-
-struct TransactionList: View {
-    @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: Stack
-    
-    var body: some View {
-        ForEach($stack.transactions, id: \.id) {
-            $tr in
-            TransactionView(transaction: tr)
-                .swipeActions(edge: .leading) {
-                    Button("Clone") {
-                        let copy = tr.copy() as! Transaction
-                        self.cloneItem(from: copy)
-                    }
-                    .tint(.blue)
-                }
-        }
-        .onDelete(perform: self.deleteItem)
-        .onMove(perform: self.moveItem)
-        .cornerRadius(10)
-        .padding([.horizontal])
-    }
-    
-    private func deleteItem (at offset: IndexSet) {
-        stack.transactions.remove(atOffsets: offset)
-        budget.saveBudget()
-        budget.objectWillChange.send()
-    }
-    private func moveItem (at offset: IndexSet, to index: Int) {
-        DispatchQueue.main.async {
-            stack.transactions.move(fromOffsets: offset, toOffset: index)
-            budget.saveBudget()
-        }
-    }
-    private func cloneItem (from item: Transaction) {
-        stack.transactions.insert(item, at: 0)
-        budget.saveBudget()
+        budget.save()
     }
 }
 
@@ -108,7 +69,7 @@ struct StackDetailsButton: View {
 }
 
 // Settings section for various stack types
-struct StackSettingsView: View {
+struct StackSettings: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: Stack
     
@@ -118,7 +79,7 @@ struct StackSettingsView: View {
             
             TextField("Stack Name", text: $stack.name) {
                 _ in
-                budget.saveBudget()
+                budget.save()
             }
             .modifier(BudgetTextfieldModifier())
             .padding([.top, .horizontal])
@@ -146,33 +107,33 @@ struct StackSettingsView: View {
         } //VStack
         .onChange(of: stack.color) {
             _ in
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.type) {
             _ in
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.accrueStart) {
             _ in
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.accrueFrequency) {
             val in
             if (val <= 0) { stack.accrueFrequency = 1 }
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.accruePeriod) {
             _ in
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
         .onChange(of: stack.icon) {
             _ in
-            budget.saveBudget()
+            budget.save()
             budget.objectWillChange.send()
         }
     }
@@ -221,7 +182,7 @@ struct StackPercentSettings : View {
         HStack {
             TextField("Percent", value: $stack.percent, formatter: budget.perFormatter) {
                 _ in
-                budget.saveBudget()
+                budget.save()
             }
             .modifier(BudgetTextfieldModifier())
 //            .modifier(TextfieldSelectAllModifier())
@@ -255,7 +216,7 @@ struct StackAccrueSettings : View {
         HStack {
             TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter) {
                 _ in
-                budget.saveBudget()
+                budget.save()
             }
             .modifier(BudgetTextfieldModifier())
 //            .modifier(TextfieldSelectAllModifier())
@@ -373,9 +334,9 @@ struct BudgetTextfieldModifier: ViewModifier {
 //            List {
 //                ForEach (budget.stacks, id: \.id) {
 //                    stack in
-//                    StackEditorView(stack: stack)
+//                    StackEditor(stack: stack)
 //                }
 //            }
-        StackEditorView(stack: budget.stacks[0])
+        StackEditor(stack: budget.stacks[0])
     }.environmentObject(budget)
 }

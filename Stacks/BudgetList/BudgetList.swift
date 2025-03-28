@@ -25,7 +25,7 @@ class BudgetList: ObservableObject {
     
     func createBudget() {
         let newBudget = Budget()
-        newBudget.saveBudget()
+        newBudget.save()
         urlList.append(newBudget.budgetUrl)
     }
     

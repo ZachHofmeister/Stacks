@@ -21,28 +21,27 @@ struct StackEditor: View {
             
             //List of budget items
             if stack.type != .overflow {
-                TransactionList(stack: stack)
+                TransactionList(trans: stack.transactions)
             }
         } // List
         .navigationTitle("Stack Info")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if stack.type != .overflow {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    StackDetailsButton(stack: stack)
+                }
                 ToolbarItemGroup(placement: .bottomBar) {
                     EditButton()
                     Image(systemName: "plus")
                         .onTapGesture(count: 1, perform: self.addItem)
                         .foregroundColor(.accentColor)
                 }
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    StackDetailsButton(stack: stack)
-                }
             }
         }
     }
-    
     private func addItem () {
-        stack.transactions.insert(Transaction(), at: 0)
+        stack.transactions.array.insert(Transaction(), at: 0)
         budget.save()
     }
 }
@@ -323,11 +322,11 @@ struct BudgetTextfieldModifier: ViewModifier {
 #Preview {
     let budget = Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: TransactionArray(transactions: [Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: TransactionArray(transactions: [Transaction(of: 100)])),
 //            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {

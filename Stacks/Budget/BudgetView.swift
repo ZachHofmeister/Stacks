@@ -45,13 +45,6 @@ struct BudgetView: View {
             }
             .onDelete(perform: self.deleteStack)
             .onMove(perform: self.moveStack)
-//            Section {
-//                VStack {
-//                    Text("Breakdown").font(.headline)
-//                    TextField("Preview income", value: $previewIncome, formatter: budget.curFormatter)
-//                    .foregroundColor(previewIncome >= 0 ? .green : .red)
-//                }
-//            }
         }
         .background(Color(.secondarySystemBackground))
         .navigationTitle(budget.name)
@@ -132,17 +125,19 @@ struct BudgetView: View {
     }
 }
 
+
+
 // Preview
 #Preview {
     NavigationStack {
         BudgetView()
     }.environmentObject(Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: TransactionArray(transactions: [Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: TransactionArray(transactions: [Transaction(of: 100)])),
             Stack(name: "test1", color: .yellow, type: .overflow)
         ]
     ))

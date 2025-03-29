@@ -12,7 +12,7 @@ class Budget: ObservableObject, Codable, Identifiable {
     var id: UUID //should be const except loadPlist function needs to change
     @Published var name: String
     @Published var balances: [Balance]
-    @Published var incomes: [Transaction]
+    @Published var incomes: TransactionArray
     @Published var stacks: [Stack]
         
     let curFormatter: NumberFormatter = NumberFormatter()
@@ -38,7 +38,7 @@ class Budget: ObservableObject, Codable, Identifiable {
     
     var totalIncome: Double {
         var result = 0.0
-        for i in incomes {
+        for i in incomes.array {
             result += i.amount
         }
         return result
@@ -66,7 +66,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         case id, name, balances, incomes, stacks
     }
     
-    init(named name: String = "Budget", balances: [Balance] = [], incomes: [Transaction] = [], stacks: [Stack] = []) {
+    init(named name: String = "Budget", balances: [Balance] = [], incomes: TransactionArray = TransactionArray(), stacks: [Stack] = []) {
         self.id = UUID()
         self.name = name
         self.balances = balances
@@ -84,7 +84,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.id = decodedBudget?.id ?? UUID()
         self.name = decodedBudget?.name ?? "Budget"
         self.balances = decodedBudget?.balances ?? []
-        self.incomes = decodedBudget?.incomes ?? []
+        self.incomes = decodedBudget?.incomes ?? TransactionArray()
         self.stacks = decodedBudget?.stacks ?? []
         
         initFormatters()
@@ -96,7 +96,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
         self.name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
         self.balances = (try? container.decode([Balance].self, forKey: .balances)) ?? []
-        self.incomes = (try? container.decode([Transaction].self, forKey: .incomes)) ?? []
+        self.incomes = (try? container.decode(TransactionArray.self, forKey: .incomes)) ?? TransactionArray()
         self.stacks = (try? container.decode([Stack].self, forKey: .stacks)) ?? []
         
         initFormatters()
@@ -129,7 +129,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.id = decodedBudget?.id ?? UUID()
         self.name = decodedBudget?.name ?? "Budget"
         self.balances = decodedBudget?.balances ?? []
-        self.incomes = decodedBudget?.incomes ?? []
+        self.incomes = decodedBudget?.incomes ?? TransactionArray()
         self.stacks = decodedBudget?.stacks ?? []
     }
     

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct TransactionList: View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: Stack
+    @ObservedObject var trans: TransactionArray
     
     var body: some View {
-        ForEach($stack.transactions, id: \.id) {
+        ForEach($trans.array, id: \.id) {
             $tr in
             TransactionView(transaction: tr)
                 .swipeActions(edge: .leading) {
@@ -28,19 +28,18 @@ struct TransactionList: View {
         .cornerRadius(10)
         .padding([.horizontal])
     }
-    
     private func deleteItem (at offset: IndexSet) {
-        stack.transactions.remove(atOffsets: offset)
+        trans.array.remove(atOffsets: offset)
         budget.save()
     }
     private func moveItem (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
-            stack.transactions.move(fromOffsets: offset, toOffset: index)
+            trans.array.move(fromOffsets: offset, toOffset: index)
             budget.save()
         }
     }
     private func cloneItem (from item: Transaction) {
-        stack.transactions.insert(item, at: 0)
+        trans.array.insert(item, at: 0)
         budget.save()
     }
 }

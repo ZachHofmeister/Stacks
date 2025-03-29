@@ -52,11 +52,11 @@ struct StackPreView: View {
         BudgetView()
     }.environmentObject(Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: TransactionArray(transactions: [Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: TransactionArray(transactions: [Transaction(of: 100)])),
             Stack(name: "test1", color: .yellow, type: .overflow)
         ]
     ))

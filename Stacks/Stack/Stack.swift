@@ -46,12 +46,12 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     @Published var accrueStart: Date
     @Published var accrueFrequency: Int
     @Published var accruePeriod: PeriodUnits
-    @Published var transactions: [Transaction]
+    @Published var transactions: TransactionArray
     @Published var icon: String
     
     var totalTransactions: Double {
         var total = 0.0
-        for item in transactions {
+        for item in transactions.array {
             total += item.amount
         }
         return total
@@ -60,7 +60,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are increasing
     var totalAdded: Double {
         var total = 0.0
-        for item in transactions where item.amount > 0 {
+        for item in transactions.array where item.amount > 0 {
             total += item.amount;
         }
         return total
@@ -69,7 +69,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are spending
     var totalSpent: Double {
         var total = 0.0
-        for item in transactions where item.amount < 0 {
+        for item in transactions.array where item.amount < 0 {
             total += item.amount;
         }
         return total
@@ -90,7 +90,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart: Date = Date(),
         accrueFrequency: Int = 1,
         accruePeriod: PeriodUnits = .Days,
-        transactions: [Transaction] = [],
+        transactions: TransactionArray = TransactionArray(),
         icon: String = "dollarsign.circle"
     ){
         self.name = name
@@ -124,7 +124,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
         accruePeriod = (try? container.decode(PeriodUnits.self, forKey: .accruePeriod)) ?? PeriodUnits.Days
-        transactions = (try? container.decode([Transaction].self, forKey: .transactions)) ?? []
+        transactions = (try? container.decode(TransactionArray.self, forKey: .transactions)) ?? TransactionArray()
         icon = (try? container.decode(String.self, forKey: .icon)) ?? "dollarsign.circle"
     }
     

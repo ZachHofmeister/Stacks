@@ -7,11 +7,13 @@
 
 import Foundation
 
+//Singleton class, list of all budget plists
 class BudgetList: ObservableObject {
-    @Published var urlList: [URL]
+    static let shared = BudgetList()
+    @Published private(set) var urlList: [URL]
     
     //initializes the urlList
-    init() {
+    private init() {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
         var docsContents: [URL] = []
         do {

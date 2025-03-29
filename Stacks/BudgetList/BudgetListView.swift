@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BudgetListView: View {
-    @StateObject private var budgetList = BudgetList()
+    @ObservedObject var budgetList = BudgetList.shared
     @StateObject private var budget = Budget()
     
     var body: some View {
@@ -16,10 +16,10 @@ struct BudgetListView: View {
             List {
                 ForEach(budgetList.urlList, id: \.self) {
                     url in
-                    // onAppear is used to change the Budget environment object
                     let budgetName = Budget(from: url).name
                     NavigationLink(destination: BudgetView()
                         .onAppear{budget.loadPlist(from: url)}
+                       //load onAppear: This is probably why there is a delay in name change, but not sure why it is just the name delayed
                     ) {
                         Label(budgetName, systemImage: "book")
                     }
@@ -33,12 +33,11 @@ struct BudgetListView: View {
             .listStyle(.sidebar)
             .navigationTitle("Welcome to Stacks!")
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Label("New Budget", systemImage: "plus")
+                ToolbarItemGroup(placement: .bottomBar) {
+                    EditButton()
+                    Image(systemName: "plus")
                         .onTapGesture(count: 1, perform: budgetList.createBudget)
                         .foregroundColor(.accentColor)
-                        .labelStyle(.titleAndIcon)
-                        
                 }
             }
         }

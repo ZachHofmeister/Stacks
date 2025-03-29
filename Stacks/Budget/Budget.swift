@@ -77,15 +77,9 @@ class Budget: ObservableObject, Codable, Identifiable {
     }
     
     // init from the URL of a plist file
-    init(from url: URL) {
-        let plistDecoder = PropertyListDecoder()
-        let retrievedBudget = try? Data(contentsOf: url)
-        let decodedBudget = try? plistDecoder.decode(Budget.self, from: retrievedBudget!)
-        self.id = decodedBudget?.id ?? UUID()
-        self.name = decodedBudget?.name ?? "Budget"
-        self.balances = decodedBudget?.balances ?? []
-        self.incomes = decodedBudget?.incomes ?? []
-        self.stacks = decodedBudget?.stacks ?? []
+    convenience init(from url: URL) {
+        self.init()
+        self.loadPlist(from: url)
         
         initFormatters()
     }

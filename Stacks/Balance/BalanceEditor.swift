@@ -19,7 +19,7 @@ struct BalanceEditor: View {
                 budget.objectWillChange.send()
             }
             .foregroundColor(.blue)
-            TextField("Balance", value: $balance.balance, formatter: budget.curFormatter) {
+            TextField("Balance", value: $balance.balance, formatter: Formatters.curFormatter) {
                 _ in
                 budget.save()
                 budget.objectWillChange.send()

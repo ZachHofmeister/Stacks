@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TellerKit
 
 struct BudgetListView: View {
     @ObservedObject var budgetList = BudgetList.shared
@@ -36,11 +37,11 @@ struct BudgetListView: View {
                 ToolbarItemGroup(placement: .bottomBar) {
                     EditButton()
                     Image(systemName: "plus")
-                        .onTapGesture(count: 1, perform: budgetList.createBudget)
                         .foregroundColor(.accentColor)
+                        .onTapGesture(count: 1, perform: budgetList.createBudget)
                 }
             }
-        }
+        } //NavigationStack
         .environmentObject(budget)
     }
 }

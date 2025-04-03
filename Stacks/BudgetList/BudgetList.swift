@@ -15,14 +15,48 @@ class BudgetList: ObservableObject {
     //initializes the urlList
     private init() {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
+        
+        //Create BudgetList folder in documents directory if not existing
+        let budgetListURL = docsUrl.appendingPathComponent("BudgetList")
+        do {
+            try FileManager.default.createDirectory(atPath: budgetListURL.path, withIntermediateDirectories: true, attributes: nil)
+        } catch let error {
+            print("Error creating directory: \(error)")
+        }
+        
+        // Get all plists in documents folder
         var docsContents: [URL] = []
         do {
             docsContents = try FileManager.default.contentsOfDirectory(at: docsUrl, includingPropertiesForKeys: nil)
-        } catch {
-            print("Error: could not init BudgetList")
-            print(error.localizedDescription)
+        } catch let error {
+            print("Error getting plists in docs folder: \(error)")
         }
-        self.urlList = docsContents.filter { $0.pathExtension == "plist" } //all plists in documents folder
+        let plistInDocsURL = docsContents.filter { $0.pathExtension == "plist" }
+        
+        // Move all plists in documents folder to BudgetList folder - migration from storing only budgets as plists in documents root
+        for url in plistInDocsURL {
+            let newURL = budgetListURL.appendingPathComponent(url.lastPathComponent)
+            do {
+                if FileManager.default.fileExists(atPath: newURL.path) {
+                    try FileManager.default.removeItem(atPath: newURL.path)
+                }
+                try FileManager.default.moveItem(atPath: url.path, toPath: newURL.path)
+                print("The new URL: \(newURL)")
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        
+        // Get all plists in BudgetList folder
+        var budgetListContents: [URL] = []
+        do {
+            budgetListContents = try FileManager.default.contentsOfDirectory(at: budgetListURL, includingPropertiesForKeys: nil)
+        } catch let error {
+            print("Error getting plists in BudgetList folder: \(error)")
+        }
+        
+        //set urlList to plist URLs in BudgetList folder
+        self.urlList = budgetListContents.filter { $0.pathExtension == "plist" }
     }
     
     func createBudget() {

@@ -24,16 +24,16 @@ struct StackPreView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        Text(budget.formatCurrency(from: stack.balance(budget: budget)))
+                        Text(Formatters.asCurrency(from: stack.balance(budget: budget)))
                     }
                     HStack {
                         Spacer()
                         switch stack.type {
                         case .percent:
-                            Text(budget.formatPercent(from: stack.percent))
+                            Text(Formatters.asPercent(from: stack.percent))
                                 .font(.footnote)
                         case .accrue:
-                            Text("\(budget.formatCurrency(from: stack.accrue)) every \(stack.accrueFrequency) \(stack.accruePeriod.rawValue)")
+                            Text("\(Formatters.asCurrency(from: stack.accrue)) every \(stack.accrueFrequency) \(stack.accruePeriod.rawValue)")
                                 .font(.footnote)
                         default:
                             Text(stack.type.rawValue)

@@ -28,14 +28,16 @@ struct StackEditor: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if stack.type != .overflow {
+                //Details button at top
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    StackDetailsButton(stack: stack)
+                }
+                //Edit and + button at bottom
                 ToolbarItemGroup(placement: .bottomBar) {
                     EditButton()
                     Image(systemName: "plus")
                         .onTapGesture(count: 1, perform: self.addItem)
                         .foregroundColor(.accentColor)
-                }
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    StackDetailsButton(stack: stack)
                 }
             }
         }
@@ -180,13 +182,13 @@ struct StackPercentSettings : View {
     
     var body: some View {
         HStack {
-            TextField("Percent", value: $stack.percent, formatter: budget.perFormatter) {
+            TextField("Percent", value: $stack.percent, formatter: Formatters.perFormatter) {
                 _ in
                 budget.save()
             }
             .modifier(BudgetTextfieldModifier())
 //            .modifier(TextfieldSelectAllModifier())
-            Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+            Text("\(Formatters.asCurrency(from: stack.balance(budget: budget)))")
             .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
             .bold()
         }
@@ -200,7 +202,7 @@ struct StackReservedSettings : View {
     @ObservedObject var stack: Stack
     
     var body: some View {
-        Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+        Text("\(Formatters.asCurrency(from: stack.balance(budget: budget)))")
         .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
         .bold()
         .padding([.top, .horizontal, .bottom])
@@ -214,13 +216,13 @@ struct StackAccrueSettings : View {
     
     var body: some View {
         HStack {
-            TextField("Accruing Amount", value: $stack.accrue, formatter: budget.curFormatter) {
+            TextField("Accruing Amount", value: $stack.accrue, formatter: Formatters.curFormatter) {
                 _ in
                 budget.save()
             }
             .modifier(BudgetTextfieldModifier())
 //            .modifier(TextfieldSelectAllModifier())
-            Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+            Text("\(Formatters.asCurrency(from: stack.balance(budget: budget)))")
             .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
             .bold()
         }
@@ -252,7 +254,7 @@ struct StackOverflowSettings : View {
     @ObservedObject var stack: Stack
     
     var body: some View {
-        Text("\(budget.formatCurrency(from: stack.balance(budget: budget)))")
+        Text("\(Formatters.asCurrency(from: stack.balance(budget: budget)))")
         .foregroundColor(stack.balance(budget: budget) >= 0 ? .green : .red)
         .bold()
         .padding(.top)
@@ -274,7 +276,7 @@ struct StackDetails : View {
             if (stack.type == .percent) {
                 StackDetailItem(name: "Total Income", amount: budget.totalIncome)
                 .padding([.top])
-                StackDetailItem(name: "\(budget.formatPercent(from: stack.percent))", amount: stack.baseAmount(budget: budget))
+                StackDetailItem(name: "\(Formatters.asPercent(from: stack.percent))", amount: stack.baseAmount(budget: budget))
                 .padding([.top])
             }
             else if (stack.type == .accrue) {
@@ -301,7 +303,7 @@ struct StackDetailItem : View {
         HStack {
             Text(name)
             Spacer()
-            Text("\(budget.formatCurrency(from: amount))")
+            Text("\(Formatters.asCurrency(from: amount))")
             .foregroundColor(amount >= 0 ? .green : .red)
             .bold()
         }

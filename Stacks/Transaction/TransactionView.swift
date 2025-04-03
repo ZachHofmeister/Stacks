@@ -14,7 +14,7 @@ struct TransactionView: View {
     var body: some View {
         VStack {
             HStack {
-                TextField("Amount", value: $transaction.amount, formatter: budget.curFormatter) { budget.save() }
+                TextField("Amount", value: $transaction.amount, formatter: Formatters.curFormatter) { budget.save() }
                     .foregroundColor(transaction.amount >= 0 ? .green : .red)
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
                     .onChange(of: transaction.date) { _ in budget.save() }

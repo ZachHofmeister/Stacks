@@ -14,9 +14,6 @@ class Budget: ObservableObject, Codable, Identifiable {
     @Published var balances: [Balance]
     @Published var incomes: [Transaction]
     @Published var stacks: [Stack]
-        
-    let curFormatter: NumberFormatter = NumberFormatter()
-    let perFormatter: NumberFormatter = NumberFormatter()
     
     var budgetUrl: URL {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
@@ -66,35 +63,32 @@ class Budget: ObservableObject, Codable, Identifiable {
         case id, name, balances, incomes, stacks
     }
     
-    init(named name: String = "Budget", balances: [Balance] = [], incomes: [Transaction] = [], stacks: [Stack] = []) {
-        self.id = UUID()
+    init(id: UUID = UUID(), named name: String = "Budget", balances: [Balance] = [], incomes: [Transaction] = [], stacks: [Stack] = []) {
+        self.id = id
         self.name = name
         self.balances = balances
         self.incomes = incomes
         self.stacks = stacks
-        
-        initFormatters()
     }
     
     // init from the URL of a plist file
     convenience init(from url: URL) {
         self.init()
         self.loadPlist(from: url)
-        
-        initFormatters()
     }
     
     // required to conform to Codable
-    required init(from decoder: Decoder) throws {
+    required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
-        self.name = (try? container.decode(String.self, forKey: .name)) ?? "Budget"
-        self.balances = (try? container.decode([Balance].self, forKey: .balances)) ?? []
-        self.incomes = (try? container.decode([Transaction].self, forKey: .incomes)) ?? []
-        self.stacks = (try? container.decode([Stack].self, forKey: .stacks)) ?? []
-        
-        initFormatters()
+        self.init(
+            id: (try? container.decode(UUID.self, forKey: .id)) ?? UUID(),
+            named: (try? container.decode(String.self, forKey: .name)) ?? "Budget",
+            balances: (try? container.decode([Balance].self, forKey: .balances)) ?? [],
+            incomes: (try? container.decode([Transaction].self, forKey: .incomes)) ?? [],
+            stacks: (try? container.decode([Stack].self, forKey: .stacks)) ?? []
+        )
     }
+    
     // required to conform to Codable
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -105,17 +99,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         try container.encode(stacks, forKey: .stacks)
     }
     
-    func initFormatters() {
-        curFormatter.numberStyle = .currency
-        curFormatter.maximumFractionDigits = 2
-        curFormatter.isLenient = true
-        
-        perFormatter.numberStyle = .percent
-        perFormatter.maximumFractionDigits = 1
-        perFormatter.isLenient = true
-    }
-    
-    // load data from the URL of a plist file
+    // load budget from the URL of a plist file
     func loadPlist(from url: URL) {
         let plistDecoder = PropertyListDecoder()
         let retrievedBudget = try? Data(contentsOf: url)
@@ -128,10 +112,14 @@ class Budget: ObservableObject, Codable, Identifiable {
     }
     
     func save(change: Bool = true) {
-        let plistEncoder = PropertyListEncoder()
-        if let encodedBudget = try? plistEncoder.encode(self) {
-            try? encodedBudget.write(to: budgetUrl, options: .noFileProtection)
+        //Don't save to plist if running in preview mode
+        if (ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1") {
+            let plistEncoder = PropertyListEncoder()
+            if let encodedBudget = try? plistEncoder.encode(self) {
+                try? encodedBudget.write(to: budgetUrl, options: .noFileProtection)
+            }
         }
+        
         if (change) { self.objectWillChange.send() }
     }
     
@@ -154,13 +142,5 @@ class Budget: ObservableObject, Codable, Identifiable {
         }
         // save the newly imported data to the local serialized budget file
         save()
-    }
-    
-    func formatCurrency(from num: Double) -> String {
-        return curFormatter.string(from: num as NSNumber) ?? "$format"
-    }
-    
-    func formatPercent(from num: Double) -> String {
-        return perFormatter.string(from: num as NSNumber) ?? "%format"
     }
 }

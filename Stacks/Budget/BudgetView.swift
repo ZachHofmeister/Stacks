@@ -12,20 +12,22 @@ struct BudgetView: View {
     @State private var isRenaming = false
     @State private var isExporting = false
     @State private var isImporting = false
-    @State private var previewIncome: Double = 0.0
+//    @State private var previewIncome: Double = 0.0
     
     var body: some View {
         List {
             Section {
                 NavigationLink (destination: BalanceList()) {
-                    Text("Total Balance: \(budget.formatCurrency(from: budget.totalBalance))")
+                    Text("Total Balance: \(Formatters.asCurrency(from: budget.totalBalance))")
                 }
             }
+            
             Section {
                 NavigationLink (destination: IncomeList()) {
-                    Text("Total Income: \(budget.formatCurrency(from: budget.totalIncome))")
+                    Text("Total Income: \(Formatters.asCurrency(from: budget.totalIncome))")
                 }
             }
+            
             ForEach($budget.stacks, id: \.id) {
                 $stack in
                 StackPreView(stack: stack)
@@ -45,6 +47,7 @@ struct BudgetView: View {
             }
             .onDelete(perform: self.deleteStack)
             .onMove(perform: self.moveStack)
+            
 //            Section {
 //                VStack {
 //                    Text("Breakdown").font(.headline)

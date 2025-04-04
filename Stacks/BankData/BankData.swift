@@ -59,7 +59,7 @@ class BankData : ObservableObject {
         self.save()
     }
     
-    func printAllAuthedFours() async throws {
+    func printAll() async throws {
         guard let url = URL(string: "https://api.teller.io/accounts") else { return }
         for auth in self.authList {
             var request = URLRequest(url: url)

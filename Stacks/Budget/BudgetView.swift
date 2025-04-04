@@ -76,6 +76,9 @@ struct BudgetView: View {
             }
             ToolbarItemGroup(placement: .bottomBar) {
                 EditButton()
+//                Button(action: {self.addStack()}) {
+//                    
+//                }
                 Image(systemName: "plus")
                     .onTapGesture(count: 1, perform: self.addStack)
                     .foregroundColor(.accentColor)

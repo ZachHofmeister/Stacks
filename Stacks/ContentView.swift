@@ -8,9 +8,13 @@
 import SwiftUI
 import TellerKit
 
-struct ContentView: View {    
+struct ContentView: View {
+    @StateObject private var budget = Budget()
+    
     var body: some View {
-        BudgetListView()
+        NavigationStack {
+            BudgetListView()
+        }.environmentObject(budget)
     }
 }
 

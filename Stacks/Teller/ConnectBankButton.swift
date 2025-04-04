@@ -13,7 +13,7 @@ struct ConnectBankButton: View {
     
     var body: some View {
         Button(action: {isPresented = true}) {
-            Label("Connect Bank Account", systemImage: "dollarsign.bank.building")
+            Label("Connect New", systemImage: "plus")
         }
         .tellerConnect(isPresented: $isPresented, config: Teller.Config(
             appId: getAppID(),

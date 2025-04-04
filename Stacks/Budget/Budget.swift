@@ -16,8 +16,10 @@ class Budget: ObservableObject, Codable, Identifiable {
     @Published var stacks: [Stack]
     
     var budgetUrl: URL {
-        let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
-        return docsUrl.appendingPathComponent(id.uuidString).appendingPathExtension("plist") //uses id as file name
+        let docsURL = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
+        let budgetListURL = docsURL.appendingPathComponent("BudgetList")
+        let budgetUrl = budgetListURL.appendingPathComponent(id.uuidString).appendingPathExtension("plist")
+        return budgetUrl
     }
     
     //computed property is a BudgetFile object with latest budget data.
@@ -113,12 +115,12 @@ class Budget: ObservableObject, Codable, Identifiable {
     
     func save(change: Bool = true) {
         //Don't save to plist if running in preview mode
-        if (ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1") {
+//        if (ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1") {
             let plistEncoder = PropertyListEncoder()
             if let encodedBudget = try? plistEncoder.encode(self) {
                 try? encodedBudget.write(to: budgetUrl, options: .noFileProtection)
             }
-        }
+//        }
         
         if (change) { self.objectWillChange.send() }
     }

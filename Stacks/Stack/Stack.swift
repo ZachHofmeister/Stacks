@@ -111,7 +111,9 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     }
     
     enum CodingKeys: CodingKey {
-        case name, color, type, percent, accrue, accrueStart, accrueFrequency, accruePeriod, transactions, icon
+        case name, color, type, percent, accrue, accrueStart, accrueFrequency, accruePeriod, transactions, icon,
+             // The below are old coding keys retained for compatibility!
+             budgetItems
     }
     
     required init(from decoder: Decoder) throws {
@@ -124,7 +126,8 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
         accruePeriod = (try? container.decode(PeriodUnits.self, forKey: .accruePeriod)) ?? PeriodUnits.Days
-        transactions = (try? container.decode([Transaction].self, forKey: .transactions)) ?? []
+        transactions = (try? container.decode([Transaction].self, forKey: .transactions)) ??
+            (try? container.decode([Transaction].self, forKey: .budgetItems)) ?? []
         icon = (try? container.decode(String.self, forKey: .icon)) ?? "dollarsign.circle"
     }
     

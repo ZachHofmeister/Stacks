@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 922F620A28A971CC0078D87A /* SymbolPicker */; };
 		92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */; };
+		92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */ = {isa = PBXBuildFile; fileRef = 92C05E452D9FA57100CE2750 /* tempCreds.json */; };
 		92DC50BC2D9B3A60003B7A8B /* TellerKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */; };
 		92DC50BD2D9B3A60003B7A8B /* TellerKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610028A0D42E0076FB89 /* StacksApp.swift */; };
@@ -54,6 +55,7 @@
 		920B11AE28B01FE200175252 /* Stacks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Stacks.entitlements; sourceTree = "<group>"; };
 		92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9286978729C5857E008DD845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		92C05E452D9FA57100CE2750 /* tempCreds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempCreds.json; sourceTree = "<group>"; };
 		92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = TellerKit.xcframework; sourceTree = "<group>"; };
 		92F360FD28A0D42E0076FB89 /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 		92553BE02D93CBFD00E28C39 /* Transaction */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Transaction; sourceTree = "<group>"; };
 		92553BE32D93CCA600E28C39 /* Budget */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Budget; sourceTree = "<group>"; };
 		92B6E17B2D9A55C5000EA8E3 /* Modules */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Modules; sourceTree = "<group>"; };
+		92C05E422D9FA2A000CE2750 /* Teller */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Teller; sourceTree = "<group>"; };
 		92F6D6812D9DF778006AC8CD /* BankData */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BankData; sourceTree = "<group>"; };
 		92F6D6882D9DF7FF006AC8CD /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -128,10 +131,12 @@
 		92F360FF28A0D42E0076FB89 /* Stacks */ = {
 			isa = PBXGroup;
 			children = (
+				92C05E452D9FA57100CE2750 /* tempCreds.json */,
 				9286978729C5857E008DD845 /* Info.plist */,
 				920B11AE28B01FE200175252 /* Stacks.entitlements */,
 				92F3610028A0D42E0076FB89 /* StacksApp.swift */,
 				92F3610228A0D42E0076FB89 /* ContentView.swift */,
+				92C05E422D9FA2A000CE2750 /* Teller */,
 				92F6D6812D9DF778006AC8CD /* BankData */,
 				92553BCE2D93C72700E28C39 /* BudgetList */,
 				92553BE32D93CCA600E28C39 /* Budget */,
@@ -189,6 +194,7 @@
 				92553BE02D93CBFD00E28C39 /* Transaction */,
 				92553BE32D93CCA600E28C39 /* Budget */,
 				92B6E17B2D9A55C5000EA8E3 /* Modules */,
+				92C05E422D9FA2A000CE2750 /* Teller */,
 				92F6D6812D9DF778006AC8CD /* BankData */,
 				92F6D6882D9DF7FF006AC8CD /* Preview Content */,
 			);
@@ -288,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */,
+				92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */,
 				92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

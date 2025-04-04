@@ -76,7 +76,8 @@ class BankData : ObservableObject {
                 do {
                     let accounts = try JSONDecoder().decode([Teller.Account].self, from: data) //could throw typeMismatch if Teller.Error is returned
                     for acct in accounts {
-                        print(acct.lastFour)
+//                        print("\(acct)\n")
+                        print("\(acct.institution.name) \(acct.subtype) \(acct.lastFour)")
                     }
                 } catch let DecodingError.typeMismatch(type, context) {
                     print("Type '\(type)' mismatch:", context.debugDescription)

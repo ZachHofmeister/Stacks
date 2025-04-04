@@ -34,6 +34,18 @@ struct BudgetListView: View {
             .listStyle(.sidebar)
             .navigationTitle("Welcome to Stacks!")
             .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    ConnectBankButton()
+                    Button("PRINT") {
+                        Task {
+                            do {
+                                try await BankData.shared.printAllAuthedFours()
+                            } catch {
+                                print (error)
+                            }
+                        }
+                    }
+                }
                 ToolbarItemGroup(placement: .bottomBar) {
                     EditButton()
                     Image(systemName: "plus")

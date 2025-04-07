@@ -12,9 +12,17 @@ struct ConnectBankButton: View {
     @State var isPresented : Bool = false
     
     var body: some View {
-        Button(action: {isPresented = true}) {
-            Label("Connect New", systemImage: "plus")
+        Button(action: {
+            isPresented = true
+        }) {
+            Text("Connect Account")
+                .padding()
+                .buttonStyle(.bordered)
+                .font(.system(size: 18.0))
+            //For some reason a label instead of text prevents this from working...
+//            Label("Connect New", systemImage: "plus")
         }
+        .padding(.all, 5)
         .tellerConnect(isPresented: $isPresented, config: Teller.Config(
             appId: getAppID(),
             environment: .sandbox,
@@ -26,7 +34,6 @@ struct ConnectBankButton: View {
                 break
             case .enrollment(let auth):
                 BankData.shared.addAuth(auth)
-                //                    print(BankData.shared.authList)
             default:
                 break
             }

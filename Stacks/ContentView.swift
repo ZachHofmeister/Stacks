@@ -14,7 +14,8 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             BudgetListView()
-        }.environmentObject(budget)
+        }
+        .environmentObject(budget)
     }
 }
 

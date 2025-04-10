@@ -76,7 +76,6 @@
 		92553BE02D93CBFD00E28C39 /* Transaction */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Transaction; sourceTree = "<group>"; };
 		92553BE32D93CCA600E28C39 /* Budget */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Budget; sourceTree = "<group>"; };
 		92B6E17B2D9A55C5000EA8E3 /* Modules */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Modules; sourceTree = "<group>"; };
-		92C05E422D9FA2A000CE2750 /* Teller */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Teller; sourceTree = "<group>"; };
 		92F6D6812D9DF778006AC8CD /* BankData */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BankData; sourceTree = "<group>"; };
 		92F6D6882D9DF7FF006AC8CD /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -136,7 +135,6 @@
 				920B11AE28B01FE200175252 /* Stacks.entitlements */,
 				92F3610028A0D42E0076FB89 /* StacksApp.swift */,
 				92F3610228A0D42E0076FB89 /* ContentView.swift */,
-				92C05E422D9FA2A000CE2750 /* Teller */,
 				92F6D6812D9DF778006AC8CD /* BankData */,
 				92553BCE2D93C72700E28C39 /* BudgetList */,
 				92553BE32D93CCA600E28C39 /* Budget */,
@@ -194,7 +192,6 @@
 				92553BE02D93CBFD00E28C39 /* Transaction */,
 				92553BE32D93CCA600E28C39 /* Budget */,
 				92B6E17B2D9A55C5000EA8E3 /* Modules */,
-				92C05E422D9FA2A000CE2750 /* Teller */,
 				92F6D6812D9DF778006AC8CD /* BankData */,
 				92F6D6882D9DF7FF006AC8CD /* Preview Content */,
 			);

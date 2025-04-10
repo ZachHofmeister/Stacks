@@ -31,7 +31,6 @@ struct BudgetListView: View {
             }
         }
         .listStyle(.sidebar)
-        .navigationTitle("Welcome to Stacks!")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: BankDataView()) {
@@ -43,8 +42,10 @@ struct BudgetListView: View {
                 Label("Add Budget", systemImage: "plus")
                     .foregroundColor(.accentColor)
                     .onTapGesture(count: 1, perform: budgetList.createBudget)
+                    .labelStyle(.titleAndIcon)
             }
         }
+        .font(.system(size: 18))
     }
 }
 

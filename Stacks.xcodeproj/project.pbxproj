@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		921593FB2DA8826A003D2826 /* TellerKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921593FA2DA8826A003D2826 /* TellerKit.xcframework */; };
+		921593FC2DA8826A003D2826 /* TellerKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 921593FA2DA8826A003D2826 /* TellerKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		921593FE2DA8833E003D2826 /* .gitattributes in Resources */ = {isa = PBXBuildFile; fileRef = 921593FD2DA88338003D2826 /* .gitattributes */; };
 		922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 922F620A28A971CC0078D87A /* SymbolPicker */; };
 		92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */; };
 		92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */ = {isa = PBXBuildFile; fileRef = 92C05E452D9FA57100CE2750 /* tempCreds.json */; };
-		92DC50BC2D9B3A60003B7A8B /* TellerKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */; };
-		92DC50BD2D9B3A60003B7A8B /* TellerKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610028A0D42E0076FB89 /* StacksApp.swift */; };
 		92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610228A0D42E0076FB89 /* ContentView.swift */; };
 		92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92F3610428A0D4320076FB89 /* Assets.xcassets */; };
@@ -44,7 +45,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				92DC50BD2D9B3A60003B7A8B /* TellerKit.xcframework in Embed Frameworks */,
+				921593FC2DA8826A003D2826 /* TellerKit.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,10 +54,11 @@
 
 /* Begin PBXFileReference section */
 		920B11AE28B01FE200175252 /* Stacks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Stacks.entitlements; sourceTree = "<group>"; };
+		921593FA2DA8826A003D2826 /* TellerKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TellerKit.xcframework; path = ../Frameworks/TellerKit.xcframework; sourceTree = "<group>"; };
+		921593FD2DA88338003D2826 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
 		92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9286978729C5857E008DD845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		92C05E452D9FA57100CE2750 /* tempCreds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempCreds.json; sourceTree = "<group>"; };
-		92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = TellerKit.xcframework; sourceTree = "<group>"; };
 		92F360FD28A0D42E0076FB89 /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
 		92F3610228A0D42E0076FB89 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -85,7 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92DC50BC2D9B3A60003B7A8B /* TellerKit.xcframework in Frameworks */,
+				921593FB2DA8826A003D2826 /* TellerKit.xcframework in Frameworks */,
 				922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,12 +109,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		921593F92DA8826A003D2826 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				921593FD2DA88338003D2826 /* .gitattributes */,
+				921593FA2DA8826A003D2826 /* TellerKit.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		92F360F428A0D42E0076FB89 = {
 			isa = PBXGroup;
 			children = (
 				92F360FF28A0D42E0076FB89 /* Stacks */,
 				92F3611028A0D4330076FB89 /* StacksTests */,
 				92F3611A28A0D4330076FB89 /* StacksUITests */,
+				921593F92DA8826A003D2826 /* Frameworks */,
 				92F360FE28A0D42E0076FB89 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -143,7 +155,6 @@
 				92553BD92D93C9B500E28C39 /* Stack */,
 				92553BD52D93C8AC00E28C39 /* Extensions */,
 				92B6E17B2D9A55C5000EA8E3 /* Modules */,
-				92DC50BA2D9B3A24003B7A8B /* TellerKit.xcframework */,
 				92F6D6882D9DF7FF006AC8CD /* Preview Content */,
 				92F3610428A0D4320076FB89 /* Assets.xcassets */,
 				92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */,
@@ -290,6 +301,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				921593FE2DA8833E003D2826 /* .gitattributes in Resources */,
 				92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */,
 				92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */,
 				92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */,

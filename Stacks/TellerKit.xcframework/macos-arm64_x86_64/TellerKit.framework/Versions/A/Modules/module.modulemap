@@ -1,4 +1,0 @@
-framework module TellerKit {
-  header "TellerKit-Swift.h"
-  requires objc
-}

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 73;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -50,22 +50,38 @@
 
 /* Begin PBXFileReference section */
 		920B11AE28B01FE200175252 /* Stacks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Stacks.entitlements; sourceTree = "<group>"; };
+		9226184F2DB6D78300B9B91A /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		922618502DB6D78300B9B91A /* StacksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StacksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		922618512DB6D78300B9B91A /* StacksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StacksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9286978729C5857E008DD845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		92C05E452D9FA57100CE2750 /* tempCreds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempCreds.json; sourceTree = "<group>"; };
-		92F360FD28A0D42E0076FB89 /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Stacks.app; path = "/Users/zach/Library/Mobile Documents/com~apple~CloudDocs/code/xcode/Stacks/build/Debug-iphoneos/Stacks.app"; sourceTree = "<absolute>"; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
 		92F3610228A0D42E0076FB89 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		92F3610428A0D4320076FB89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		92F3610D28A0D4330076FB89 /* StacksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = StacksTests.xctest; path = "/Users/zach/Library/Mobile Documents/com~apple~CloudDocs/code/xcode/Stacks/build/Debug-iphoneos/Stacks.app/PlugIns/StacksTests.xctest"; sourceTree = "<absolute>"; };
 		92F3611128A0D4330076FB89 /* StacksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksTests.swift; sourceTree = "<group>"; };
-		92F3611728A0D4330076FB89 /* StacksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = StacksUITests.xctest; path = "/Users/zach/Library/Mobile Documents/com~apple~CloudDocs/code/xcode/Stacks/build/Debug-iphoneos/StacksUITests-Runner.app/PlugIns/StacksUITests.xctest"; sourceTree = "<absolute>"; };
 		92F3611B28A0D4330076FB89 /* StacksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksUITests.swift; sourceTree = "<group>"; };
 		92F3611D28A0D4330076FB89 /* StacksUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		922618822DB6D85C00B9B91A /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				TellerKit.xcframework = (
+					CodeSignOnCopy,
+					RemoveHeadersOnCopy,
+				);
+			};
+			buildPhase = 92DC50BE2D9B3A60003B7A8B /* Embed Frameworks */;
+			membershipExceptions = (
+				TellerKit.xcframework,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		921594062DA88453003D2826 /* Frameworks */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Frameworks; sourceTree = "<group>"; };
+		921594062DA88453003D2826 /* Frameworks */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (922618822DB6D85C00B9B91A /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Frameworks; sourceTree = "<group>"; };
 		92553BCE2D93C72700E28C39 /* BudgetList */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BudgetList; sourceTree = "<group>"; };
 		92553BD52D93C8AC00E28C39 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		92553BD62D93C8C700E28C39 /* Balance */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Balance; sourceTree = "<group>"; };
@@ -110,6 +126,9 @@
 				92F3611028A0D4330076FB89 /* StacksTests */,
 				92F3611A28A0D4330076FB89 /* StacksUITests */,
 				921594062DA88453003D2826 /* Frameworks */,
+				9226184F2DB6D78300B9B91A /* Stacks.app */,
+				922618502DB6D78300B9B91A /* StacksTests.xctest */,
+				922618512DB6D78300B9B91A /* StacksUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -186,7 +205,7 @@
 				922F620A28A971CC0078D87A /* SymbolPicker */,
 			);
 			productName = Stacks;
-			productReference = 92F360FD28A0D42E0076FB89 /* Stacks.app */;
+			productReference = 9226184F2DB6D78300B9B91A /* Stacks.app */;
 			productType = "com.apple.product-type.application";
 		};
 		92F3610C28A0D4330076FB89 /* StacksTests */ = {
@@ -204,7 +223,7 @@
 			);
 			name = StacksTests;
 			productName = StacksTests;
-			productReference = 92F3610D28A0D4330076FB89 /* StacksTests.xctest */;
+			productReference = 922618502DB6D78300B9B91A /* StacksTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		92F3611628A0D4330076FB89 /* StacksUITests */ = {
@@ -222,7 +241,7 @@
 			);
 			name = StacksUITests;
 			productName = StacksUITests;
-			productReference = 92F3611728A0D4330076FB89 /* StacksUITests.xctest */;
+			productReference = 922618512DB6D78300B9B91A /* StacksUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -249,7 +268,6 @@
 				};
 			};
 			buildConfigurationList = 92F360F828A0D42E0076FB89 /* Build configuration list for PBXProject "Stacks" */;
-			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -260,6 +278,7 @@
 			packageReferences = (
 				922F620928A971CC0078D87A /* XCRemoteSwiftPackageReference "SymbolPicker" */,
 			);
+			preferredProjectObjectVersion = 55;
 			productRefGroup = 92F360F428A0D42E0076FB89;
 			projectDirPath = "";
 			projectRoot = "";
@@ -468,7 +487,7 @@
 				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Stacks/Preview Content\"";
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				ENABLE_PREVIEWS = YES;
@@ -487,7 +506,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zachhof.stacks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -507,7 +526,7 @@
 				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Stacks/Preview Content\"";
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				ENABLE_PREVIEWS = YES;
@@ -526,7 +545,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zachhof.stacks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -542,7 +561,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -561,7 +580,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -579,7 +598,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -596,7 +615,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PAPG96B6SC;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;

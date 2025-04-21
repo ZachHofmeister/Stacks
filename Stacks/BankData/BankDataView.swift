@@ -14,7 +14,11 @@ struct BankDataView: View {
     
     var body: some View {
         VStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            List {
+                ForEach (bankData.authList, id: \.accessToken) { auth in
+//                    Text(await auth.accountStrings())
+                }
+            }
             Button("PRINT") {
                 Task {
                     do {
@@ -68,5 +72,7 @@ struct BankDataView: View {
 }
 
 #Preview {
-    BankDataView()
+    NavigationStack {
+        BankDataView()
+    }
 }

@@ -59,6 +59,32 @@ class BankData : ObservableObject {
         self.save()
     }
     
+    func getAccounts(auth: Teller.Authorization) async throws -> [Teller.Account] {
+        guard let url = URL(string: "https://api.teller.io/accounts") else { return [] }
+        var request = URLRequest(url: url)
+        //Format accessToken and insert as request header
+        let loginString = "\(auth.accessToken):"
+        let loginData = loginString.data(using: String.Encoding.utf8)!
+        let base64LoginString = loginData.base64EncodedString()
+        request.allHTTPHeaderFields = ["Authorization": "Basic \(base64LoginString)"]
+        
+        //Call API request
+        var accounts: [Teller.Account] = []
+        let (data, _) = try await URLSession.shared.data(for: request)
+        do {
+            accounts = try JSONDecoder().decode([Teller.Account].self, from: data) //could throw typeMismatch if Teller.Error is returned
+        } catch let DecodingError.typeMismatch(type, context) {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            // Print the JSON error returned from call
+            guard let object = try? JSONSerialization.jsonObject(with: data, options: []) else { return []}
+            print(object)
+        } catch let error {
+            print(error)
+        }
+        return accounts
+    }
+    
     func printAll() async throws {
         guard let url = URL(string: "https://api.teller.io/accounts") else { return }
         for auth in self.authList {

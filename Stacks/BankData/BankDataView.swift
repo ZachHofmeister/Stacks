@@ -17,6 +17,9 @@ struct BankDataView: View {
             List {
                 ForEach (bankData.authList, id: \.accessToken) { auth in
 //                    Text(await auth.accountStrings())
+                    ForEach(await bankData.getAccounts(auth: auth), id: \.id) { acct in
+                        
+                    }
                 }
             }
             Button("PRINT") {

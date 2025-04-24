@@ -24,7 +24,7 @@ struct BudgetView: View {
             
             Section {
                 NavigationLink (destination: IncomeList()) {
-                    Text("Total Income: \(Formatters.asCurrency(from: budget.totalIncome))")
+                    Text("YTD Income: \(Formatters.asCurrency(from: budget.ytdIncome))")
                 }
             }
             

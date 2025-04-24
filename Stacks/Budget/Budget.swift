@@ -43,6 +43,21 @@ class Budget: ObservableObject, Codable, Identifiable {
         return result
     }
     
+    var ytdIncome: Double {
+        var result = 0.0
+        let yearStartComps = Calendar.current.dateComponents([.year], from: Date())
+        let yearStart = Calendar.current.date(from: yearStartComps)!
+        let yearNext = Calendar.current.date(byAdding: .year, value: 1, to: yearStart)!
+        let thisYearRange = yearStart...yearNext
+        
+        for i in incomes {
+            if thisYearRange.contains(i.date) {
+                result += i.amount
+            }
+        }
+        return result
+    }
+    
     var hasOverflowStack: Bool {
         for stack in stacks {
             if stack.type == .overflow {

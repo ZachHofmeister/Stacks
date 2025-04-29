@@ -160,4 +160,23 @@ class Budget: ObservableObject, Codable, Identifiable {
         // save the newly imported data to the local serialized budget file
         save()
     }
+    
+    
+    
+    func createStack(from stack: Stack = Stack()) {
+        self.stacks.append(stack)
+        self.save()
+    }
+    
+    func moveStack (at offset: IndexSet, to index: Int) {
+        DispatchQueue.main.async {
+            self.stacks.move(fromOffsets: offset, toOffset: index)
+            self.save()
+        }
+    }
+    
+    func deleteStack (at offset: IndexSet) {
+        self.stacks.remove(atOffsets: offset)
+        self.save()
+    }
 }

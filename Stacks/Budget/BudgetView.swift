@@ -35,7 +35,7 @@ struct BudgetView: View {
                         if (stack.type != .overflow) {
                             Button("Clone") {
                                 let copy = stack.copy() as! Stack
-                                self.cloneStack(from: copy)
+                                budget.createStack(from: copy)
                             }
                             .tint(.blue)
                         } else {
@@ -45,8 +45,8 @@ struct BudgetView: View {
                         }
                     }
             }
-            .onDelete(perform: self.deleteStack)
-            .onMove(perform: self.moveStack)
+            .onDelete(perform: budget.deleteStack)
+            .onMove(perform: budget.moveStack)
             
 //            Section {
 //                VStack {
@@ -80,7 +80,7 @@ struct BudgetView: View {
 //                    
 //                }
                 Image(systemName: "plus")
-                    .onTapGesture(count: 1, perform: self.addStack)
+                    .onTapGesture(count: 1, perform: {budget.createStack()})
                     .foregroundColor(.accentColor)
             }
         }
@@ -117,25 +117,6 @@ struct BudgetView: View {
             }
         }
     } //var body
-    
-    private func deleteStack (at offset: IndexSet) {
-        budget.stacks.remove(atOffsets: offset)
-        budget.save()
-    }
-    private func moveStack (at offset: IndexSet, to index: Int) {
-        DispatchQueue.main.async {
-            budget.stacks.move(fromOffsets: offset, toOffset: index)
-            budget.save()
-        }
-    }
-    private func addStack() {
-        budget.stacks.append(Stack())
-        budget.save()
-    }
-    private func cloneStack(from stack: Stack) {
-        budget.stacks.append(stack)
-        budget.save()
-    }
 }
 
 // Preview

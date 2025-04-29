@@ -56,8 +56,6 @@ struct BudgetView: View {
 //                }
 //            }
         }
-        .padding(2)
-        .background(Color(.secondarySystemBackground))
         .navigationTitle(budget.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {

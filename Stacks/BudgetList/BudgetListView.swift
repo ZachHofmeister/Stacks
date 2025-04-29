@@ -31,6 +31,7 @@ struct BudgetListView: View {
             }
         }
         .listStyle(.sidebar)
+        .navigationTitle("Budgets")
         .toolbar {
             //Working on this feature
 //            ToolbarItem(placement: .navigationBarTrailing) {
@@ -52,5 +53,7 @@ struct BudgetListView: View {
 
 // Preview
 #Preview {
-    BudgetListView()
+    NavigationStack {
+        BudgetListView()
+    }.environmentObject(Budget())
 }

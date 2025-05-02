@@ -15,12 +15,9 @@ struct BankDataView: View {
     var body: some View {
         VStack {
             List {
-//                ForEach (bankData.authList, id: \.accessToken) { auth in
-////                    Text(await auth.accountStrings())
-//                    ForEach(await bankData.getAccounts(auth: auth), id: \.id) { acct in
-//                        
-//                    }
-//                }
+                ForEach (bankData.auths, id: \.accessToken) { auth in
+                    Text(auth.accessToken)
+                }
             }
             Button("PRINT") {
                 Task {

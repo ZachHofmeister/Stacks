@@ -12,7 +12,7 @@ class BankData : ObservableObject {
     //Singleton
     static let shared = BankData()
     private let plistUrl: URL
-    @Published private(set) var authList: [Teller.Authorization]
+    @Published private(set) var auths: [Teller.Authorization]
     
     private init() {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
@@ -28,7 +28,7 @@ class BankData : ObservableObject {
         // Create BankData.plist if not existing
         self.plistUrl = bankDataURL.appendingPathComponent("BankData").appendingPathExtension("plist")
         guard FileManager.default.fileExists(atPath: self.plistUrl.path) else {
-            self.authList = []
+            self.auths = []
             return
         }
         
@@ -41,13 +41,13 @@ class BankData : ObservableObject {
             print("Error reading BankData.plist: \(error)")
         }
         
-        self.authList = authList
+        self.auths = authList
     }
     
     func save() {
         let plistEncoder = PropertyListEncoder()
         do {
-            let encoded = try plistEncoder.encode(self.authList)
+            let encoded = try plistEncoder.encode(self.auths)
             try encoded.write(to: self.plistUrl, options: .noFileProtection)
         } catch let error {
             print("Error saving BankData.plist: \(error)")
@@ -55,7 +55,7 @@ class BankData : ObservableObject {
     }
     
     func addAuth(_ auth: Teller.Authorization) {
-        authList.append(auth)
+        self.auths.append(auth)
         self.save()
     }
     
@@ -87,7 +87,7 @@ class BankData : ObservableObject {
     
     func printAll() async throws {
         guard let url = URL(string: "https://api.teller.io/accounts") else { return }
-        for auth in self.authList {
+        for auth in self.auths {
             var request = URLRequest(url: url)
             //Format accessToken and insert as request header
             let loginString = "\(auth.accessToken):"

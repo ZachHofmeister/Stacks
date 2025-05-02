@@ -8,7 +8,7 @@
 import Foundation
 import TellerKit
 
-extension Teller.Authorization : @retroactive Encodable/*, @retroactive Hashable*/ {
+extension Teller.Authorization : @retroactive Encodable, @retroactive Hashable {
     enum CodingKeys: CodingKey {
         case accessToken, enrollment, signatures
     }
@@ -19,13 +19,13 @@ extension Teller.Authorization : @retroactive Encodable/*, @retroactive Hashable
         try container.encode(signatures, forKey: .signatures)
     }
     
-//    //Conform to hashable. Good enough for ForEach
-//    public func hash(into hasher: inout Hasher) {
-//        hasher.combine(accessToken)
-//    }
-//    public static func == (lhs: TellerKit.Teller.Authorization, rhs: TellerKit.Teller.Authorization) -> Bool {
-//        return lhs.accessToken == rhs.accessToken
-//    }
+    //Conform to hashable. Good enough for ForEach
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(accessToken)
+    }
+    public static func == (lhs: TellerKit.Teller.Authorization, rhs: TellerKit.Teller.Authorization) -> Bool {
+        return lhs.accessToken == rhs.accessToken
+    }
     
     public func accountStrings() async throws -> String {
         var acctStrings: String = ""

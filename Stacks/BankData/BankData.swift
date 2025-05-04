@@ -13,6 +13,7 @@ class BankData : ObservableObject {
     static let shared = BankData()
     private let plistUrl: URL
     @Published private(set) var auths: [Teller.Authorization]
+    @Published private(set) var accounts: [String: [Teller.Account]]?
     
     private init() {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
@@ -42,6 +43,14 @@ class BankData : ObservableObject {
         }
         
         self.auths = authList
+        
+        for auth in authList {
+            var array: [Teller.Account] = []
+            Task {
+                array = try await getAccounts(auth: auth)
+            }
+            self.accounts?[auth.accessToken] = array
+        }
     }
     
     func save() {

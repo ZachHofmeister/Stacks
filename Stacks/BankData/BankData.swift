@@ -8,12 +8,41 @@
 import Foundation
 import TellerKit
 
+class AuthedAccounts : Codable {
+    var auth: Teller.Authorization
+    var accounts: [Teller.Account]
+    
+    init (auth: Teller.Authorization, accounts: [Teller.Account] = []) {
+        
+    }
+    
+    enum CodingKeys: CodingKey {
+        case auth, accounts
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        var authDecode: Teller.Authorization
+        do {
+            let authDecode = try container.decode(Teller.Authorization.self, forKey: .auth)
+        } catch let error {
+            print("Error decoding AuthedAccounts: \(error)")
+        }
+        self.accounts = (try? container.decode([Teller.Account].self, forKey: .accounts)) ?? []
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(auth, forKey: .auth)
+        try container.encode(accounts, forKey: .accounts)
+    }
+}
+
 class BankData : ObservableObject {
     //Singleton
     static let shared = BankData()
     private let plistUrl: URL
-    @Published private(set) var auths: [Teller.Authorization]
-    @Published private(set) var accounts: [String: [Teller.Account]]?
+    @Published private(set) var auths: [AuthedAccounts]
     
     private init() {
         let docsUrl = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
@@ -34,23 +63,14 @@ class BankData : ObservableObject {
         }
         
         //Read AuthList
-        var authList: [Teller.Authorization] = []
+        var authList: [AuthedAccounts] = []
         do {
             let plistData = try Data(contentsOf: plistUrl)
-            authList = try PropertyListDecoder().decode([Teller.Authorization].self, from: plistData)
+            authList = try PropertyListDecoder().decode([AuthedAccounts].self, from: plistData)
         } catch let error {
             print("Error reading BankData.plist: \(error)")
         }
-        
         self.auths = authList
-        
-        for auth in authList {
-            var array: [Teller.Account] = []
-            Task {
-                array = try await getAccounts(auth: auth)
-            }
-            self.accounts?[auth.accessToken] = array
-        }
     }
     
     func save() {
@@ -64,7 +84,7 @@ class BankData : ObservableObject {
     }
     
     func addAuth(_ auth: Teller.Authorization) {
-        self.auths.append(auth)
+        self.auths.append(AuthedAccounts(auth: auth))
         self.save()
     }
     
@@ -99,7 +119,7 @@ class BankData : ObservableObject {
         for auth in self.auths {
             var request = URLRequest(url: url)
             //Format accessToken and insert as request header
-            let loginString = "\(auth.accessToken):"
+            let loginString = "\(auth.auth.accessToken):"
             let loginData = loginString.data(using: String.Encoding.utf8)!
             let base64LoginString = loginData.base64EncodedString()
             request.allHTTPHeaderFields = ["Authorization": "Basic \(base64LoginString)"]

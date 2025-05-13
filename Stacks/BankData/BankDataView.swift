@@ -15,7 +15,7 @@ struct BankDataView: View {
     var body: some View {
         VStack {
             List {
-                ForEach (bankData.auths, id: \.accessToken) { auth in
+                ForEach (bankData.accounts?.values, id: \.accessToken) { auth in
                     Text(auth.accessToken)
                 }
             }

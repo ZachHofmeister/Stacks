@@ -83,3 +83,17 @@ extension Teller.Institution : @retroactive Encodable {
         try container.encode(name, forKey: .name)
     }
 }
+
+extension Teller.Account : @retroactive Encodable {
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(currency, forKey: .currency)
+        try container.encode(institution, forKey: .institution)
+        try container.encode(type, forKey: .type)
+        try container.encode(subtype, forKey: .subtype)
+        try container.encode(status.rawValue, forKey: .status)
+        try container.encode(enrollmentId, forKey: .enrollmentId)
+        try container.encode(lastFour, forKey: .lastFour)
+    }
+}

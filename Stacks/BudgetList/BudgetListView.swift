@@ -34,11 +34,11 @@ struct BudgetListView: View {
         .navigationTitle("Budgets")
         .toolbar {
             //Working on this feature
-//            ToolbarItem(placement: .navigationBarTrailing) {
-//                NavigationLink(destination: BankDataView()) {
-//                    Text("Banks")
-//                }
-//            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: BankDataView()) {
+                    Text("Banks")
+                }
+            }
             ToolbarItemGroup(placement: .bottomBar) {
                 EditButton()
                 Label("Add Budget", systemImage: "plus")

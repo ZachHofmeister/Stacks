@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		922F620B28A971CC0078D87A /* SymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 922F620A28A971CC0078D87A /* SymbolPicker */; };
 		92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */; };
-		92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */ = {isa = PBXBuildFile; fileRef = 92C05E452D9FA57100CE2750 /* tempCreds.json */; };
+		928691732DDC55EC00ED9C26 /* tempCreds.json in Resources */ = {isa = PBXBuildFile; fileRef = 928691722DDC55EC00ED9C26 /* tempCreds.json */; };
 		92F3610128A0D42E0076FB89 /* StacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610028A0D42E0076FB89 /* StacksApp.swift */; };
 		92F3610328A0D42E0076FB89 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F3610228A0D42E0076FB89 /* ContentView.swift */; };
 		92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92F3610428A0D4320076FB89 /* Assets.xcassets */; };
@@ -54,8 +54,8 @@
 		922618502DB6D78300B9B91A /* StacksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StacksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		922618512DB6D78300B9B91A /* StacksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StacksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92553BCC2D93C3D000E28C39 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		928691722DDC55EC00ED9C26 /* tempCreds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempCreds.json; sourceTree = "<group>"; };
 		9286978729C5857E008DD845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		92C05E452D9FA57100CE2750 /* tempCreds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempCreds.json; sourceTree = "<group>"; };
 		92F3610028A0D42E0076FB89 /* StacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StacksApp.swift; sourceTree = "<group>"; };
 		92F3610228A0D42E0076FB89 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		92F3610428A0D4320076FB89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 		92F360FF28A0D42E0076FB89 /* Stacks */ = {
 			isa = PBXGroup;
 			children = (
-				92C05E452D9FA57100CE2750 /* tempCreds.json */,
+				928691722DDC55EC00ED9C26 /* tempCreds.json */,
 				9286978729C5857E008DD845 /* Info.plist */,
 				920B11AE28B01FE200175252 /* Stacks.entitlements */,
 				92F3610028A0D42E0076FB89 /* StacksApp.swift */,
@@ -295,8 +295,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				928691732DDC55EC00ED9C26 /* tempCreds.json in Resources */,
 				92553BCD2D93C3D000E28C39 /* LaunchScreen.storyboard in Resources */,
-				92C05E462D9FA57900CE2750 /* tempCreds.json in Resources */,
 				92F3610528A0D4320076FB89 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

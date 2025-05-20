@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+class Transactions : ObservableObject {
+    @Published var list: [Transaction]
+    
+    init(_ list: [Transaction] = []) {
+        self.list = list
+    }
+}

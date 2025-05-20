@@ -48,16 +48,16 @@ struct StackPreView: View {
 
 // Preview
 #Preview {
-    NavigationStack {
-        BudgetView()
-    }.environmentObject(Budget(
+    let budget = Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: Transactions([Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
-            Stack(name: "test1", color: .yellow, type: .overflow)
-        ]
-    ))
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
+//            Stack(name: "test1", color: .yellow, type: .overflow)
+        ]);
+    NavigationStack {
+        BudgetView()
+    }.environmentObject(budget)
 }

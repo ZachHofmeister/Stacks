@@ -12,7 +12,7 @@ class Budget: ObservableObject, Codable, Identifiable {
     var id: UUID //should be const except loadPlist function needs to change
     @Published var name: String
     @Published var balances: [Balance]
-    @Published var incomes: [Transaction]
+    @Published var incomes: Transactions
     @Published var stacks: [Stack]
     
     var budgetUrl: URL {
@@ -37,7 +37,7 @@ class Budget: ObservableObject, Codable, Identifiable {
     
     var totalIncome: Double {
         var result = 0.0
-        for i in incomes {
+        for i in incomes.list {
             result += i.amount
         }
         return result
@@ -50,7 +50,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         let yearNext = Calendar.current.date(byAdding: .year, value: 1, to: yearStart)!
         let thisYearRange = yearStart...yearNext
         
-        for i in incomes {
+        for i in incomes.list {
             if thisYearRange.contains(i.date) {
                 result += i.amount
             }
@@ -80,7 +80,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         case id, name, balances, incomes, stacks
     }
     
-    init(id: UUID = UUID(), named name: String = "Budget", balances: [Balance] = [], incomes: [Transaction] = [], stacks: [Stack] = []) {
+    init(id: UUID = UUID(), named name: String = "Budget", balances: [Balance] = [], incomes: Transactions = Transactions(), stacks: [Stack] = []) {
         self.id = id
         self.name = name
         self.balances = balances
@@ -97,11 +97,12 @@ class Budget: ObservableObject, Codable, Identifiable {
     // required to conform to Codable
     required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let incomeTransactions = (try? container.decode([Transaction].self, forKey: .incomes)) ?? []
         self.init(
             id: (try? container.decode(UUID.self, forKey: .id)) ?? UUID(),
             named: (try? container.decode(String.self, forKey: .name)) ?? "Budget",
             balances: (try? container.decode([Balance].self, forKey: .balances)) ?? [],
-            incomes: (try? container.decode([Transaction].self, forKey: .incomes)) ?? [],
+            incomes: Transactions(incomeTransactions),
             stacks: (try? container.decode([Stack].self, forKey: .stacks)) ?? []
         )
     }
@@ -112,7 +113,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
         try container.encode(balances, forKey: .balances)
-        try container.encode(incomes, forKey: .incomes)
+        try container.encode(incomes.list, forKey: .incomes)
         try container.encode(stacks, forKey: .stacks)
     }
     
@@ -124,7 +125,7 @@ class Budget: ObservableObject, Codable, Identifiable {
         self.id = decodedBudget?.id ?? UUID()
         self.name = decodedBudget?.name ?? "Budget"
         self.balances = decodedBudget?.balances ?? []
-        self.incomes = decodedBudget?.incomes ?? []
+        self.incomes = decodedBudget?.incomes ?? Transactions()
         self.stacks = decodedBudget?.stacks ?? []
     }
     

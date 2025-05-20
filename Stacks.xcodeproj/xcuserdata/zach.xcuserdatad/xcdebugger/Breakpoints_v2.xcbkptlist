@@ -112,8 +112,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "131"
             endingLineNumber = "131"
-            landmarkName = "save(change:)"
-            landmarkType = "7">
+            landmarkName = "Budget"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -128,7 +128,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "129"
             endingLineNumber = "129"
-            landmarkName = "init(from:)"
+            landmarkName = "baseAmount(budget:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -16,18 +16,19 @@ struct BudgetView: View {
     
     var body: some View {
         List {
+            // Balance Section
             Section {
                 NavigationLink (destination: BalanceList()) {
                     Text("Total Balance: \(Formatters.asCurrency(from: budget.totalBalance))")
                 }
             }
-            
+            // Income Section
             Section {
                 NavigationLink (destination: IncomeList()) {
                     Text("YTD Income: \(Formatters.asCurrency(from: budget.ytdIncome))")
                 }
             }
-            
+            // List of Stacks
             ForEach($budget.stacks, id: \.id) {
                 $stack in
                 StackPreView(stack: stack)
@@ -47,17 +48,13 @@ struct BudgetView: View {
             }
             .onDelete(perform: budget.deleteStack)
             .onMove(perform: budget.moveStack)
-            
-//            Section {
-//                VStack {
-//                    Text("Breakdown").font(.headline)
-//                    TextField("Preview income", value: $previewIncome, formatter: budget.curFormatter)
-//                    .foregroundColor(previewIncome >= 0 ? .green : .red)
-//                }
-//            }
         }
+        
+        // Title
         .navigationTitle(budget.name)
         .navigationBarTitleDisplayMode(.large)
+        
+        // Toolbar
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Menu(content: {
@@ -76,14 +73,13 @@ struct BudgetView: View {
             }
             ToolbarItemGroup(placement: .bottomBar) {
                 EditButton()
-//                Button(action: {self.addStack()}) {
-//                    
-//                }
                 Image(systemName: "plus")
                     .onTapGesture(count: 1, perform: {budget.createStack()})
                     .foregroundColor(.accentColor)
             }
         }
+        
+        // Ellipsis menu: Rename
         .alert("Rename Budget", isPresented: $isRenaming, actions: {
             let oldName = budget.name
             TextField("Budget name", text: $budget.name)
@@ -94,6 +90,8 @@ struct BudgetView: View {
             _ in
             budget.save()
         }
+        
+        // Ellipsis menu: Export
         .fileExporter(isPresented: $isExporting, document: budget.budgetFile, contentType: .json, defaultFilename: budget.name) { result in
             switch result {
             case .success(let url):
@@ -102,6 +100,8 @@ struct BudgetView: View {
                 print(error.localizedDescription)
             }
         }
+        
+        // Ellipsis menu: Import
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json]) {
             file in
             do {
@@ -111,7 +111,7 @@ struct BudgetView: View {
                     budget.importJson(from: data)
                 }
                 fileUrl.stopAccessingSecurityScopedResource()
-            } catch {
+            } catch let error {
                 print ("error reading")
                 print (error.localizedDescription)
             }
@@ -121,16 +121,16 @@ struct BudgetView: View {
 
 // Preview
 #Preview {
-    NavigationStack {
-        BudgetView()
-    }.environmentObject(Budget(
+    let budget = Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: Transactions([Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
-            Stack(name: "test1", color: .yellow, type: .overflow)
-        ]
-    ))
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
+//            Stack(name: "test1", color: .yellow, type: .overflow)
+        ]);
+    NavigationStack {
+        BudgetView()
+    }.environmentObject(budget)
 }

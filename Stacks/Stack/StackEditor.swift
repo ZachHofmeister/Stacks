@@ -21,7 +21,7 @@ struct StackEditor: View {
             
             //List of budget items
             if stack.type != .overflow {
-                TransactionList(stack: stack)
+                TransactionList(transactions: stack.transactions)
             }
         } // List
         .navigationTitle("Stack Info")
@@ -44,7 +44,7 @@ struct StackEditor: View {
     }
     
     private func addItem () {
-        stack.transactions.insert(Transaction(), at: 0)
+        stack.transactions.list.insert(Transaction(), at: 0)
         budget.save()
     }
 }
@@ -325,11 +325,11 @@ struct BudgetTextfieldModifier: ViewModifier {
 #Preview {
     let budget = Budget(
         balances: [Balance(of: 1500)],
-        incomes: [Transaction(of: 2000)],
+        incomes: Transactions([Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: [Transaction(of: 100)]),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
 //            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {

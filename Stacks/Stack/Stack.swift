@@ -8,34 +8,6 @@
 import Foundation
 import SwiftUI
 
-enum StackType: String, CaseIterable, Identifiable, Codable {
-    case percent, reserved, accrue, overflow
-    var id: Self { self }
-}
-
-enum PeriodUnits: String, CaseIterable, Identifiable, Codable {
-    case Days, Weeks, Months, Years
-    var id: Self { self }
-    
-    func toCalComponent() -> Calendar.Component {
-        switch self {
-        case .Days: return Calendar.Component.day
-        case .Weeks: return Calendar.Component.weekOfYear
-        case .Months: return Calendar.Component.month
-        case .Years: return Calendar.Component.year
-        }
-    }
-    
-    func count(given: DateComponents) -> Int {
-        switch self {
-        case .Days: return given.day ?? 0
-        case .Weeks: return given.weekOfYear ?? 0
-        case .Months: return given.month ?? 0
-        case .Years: return given.year ?? 0
-        }
-    }
-}
-
 class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     var id = UUID()
     @Published var name: String
@@ -46,12 +18,12 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     @Published var accrueStart: Date
     @Published var accrueFrequency: Int
     @Published var accruePeriod: PeriodUnits
-    @Published var transactions: [Transaction]
+    @Published var transactions: Transactions
     @Published var icon: String
     
     var totalTransactions: Double {
         var total = 0.0
-        for item in transactions {
+        for item in transactions.list {
             total += item.amount
         }
         return total
@@ -60,7 +32,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are increasing
     var totalAdded: Double {
         var total = 0.0
-        for item in transactions where item.amount > 0 {
+        for item in transactions.list where item.amount > 0 {
             total += item.amount;
         }
         return total
@@ -69,7 +41,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     // All budget items that are spending
     var totalSpent: Double {
         var total = 0.0
-        for item in transactions where item.amount < 0 {
+        for item in transactions.list where item.amount < 0 {
             total += item.amount;
         }
         return total
@@ -90,7 +62,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart: Date = Date(),
         accrueFrequency: Int = 1,
         accruePeriod: PeriodUnits = .Days,
-        transactions: [Transaction] = [],
+        transactions: Transactions = Transactions(),
         icon: String = "dollarsign.circle"
     ){
         self.name = name
@@ -126,8 +98,9 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         accrueStart = (try? container.decode(Date.self, forKey: .accrueStart)) ?? Date()
         accrueFrequency = (try? container.decode(Int.self, forKey: .accrueFrequency)) ?? 1
         accruePeriod = (try? container.decode(PeriodUnits.self, forKey: .accruePeriod)) ?? PeriodUnits.Days
-        transactions = (try? container.decode([Transaction].self, forKey: .transactions)) ??
+        let transList = (try? container.decode([Transaction].self, forKey: .transactions)) ??
             (try? container.decode([Transaction].self, forKey: .budgetItems)) ?? []
+        transactions = Transactions(transList)
         icon = (try? container.decode(String.self, forKey: .icon)) ?? "dollarsign.circle"
     }
     
@@ -141,7 +114,7 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
         try container.encode(accrueStart, forKey: .accrueStart)
         try container.encode(accrueFrequency, forKey: .accrueFrequency)
         try container.encode(accruePeriod, forKey: .accruePeriod)
-        try container.encode(transactions, forKey: .transactions)
+        try container.encode(transactions.list, forKey: .transactions)
         try container.encode(icon, forKey: .icon)
     }
     
@@ -166,5 +139,33 @@ class Stack: ObservableObject, Identifiable, Codable, NSCopying {
     
     func balance(budget: Budget) -> Double {
         return baseAmount(budget: budget) + (type == .overflow ? 0 : totalTransactions)
+    }
+}
+
+enum StackType: String, CaseIterable, Identifiable, Codable {
+    case percent, reserved, accrue, overflow
+    var id: Self { self }
+}
+
+enum PeriodUnits: String, CaseIterable, Identifiable, Codable {
+    case Days, Weeks, Months, Years
+    var id: Self { self }
+    
+    func toCalComponent() -> Calendar.Component {
+        switch self {
+        case .Days: return Calendar.Component.day
+        case .Weeks: return Calendar.Component.weekOfYear
+        case .Months: return Calendar.Component.month
+        case .Years: return Calendar.Component.year
+        }
+    }
+    
+    func count(given: DateComponents) -> Int {
+        switch self {
+        case .Days: return given.day ?? 0
+        case .Weeks: return given.weekOfYear ?? 0
+        case .Months: return given.month ?? 0
+        case .Years: return given.year ?? 0
+        }
     }
 }

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct TransactionList: View {
     @EnvironmentObject var budget: Budget
-    @ObservedObject var stack: Stack
+    @ObservedObject var transactions: Transactions
     
     var body: some View {
-        ForEach($stack.transactions, id: \.id) {
+        ForEach($transactions.list, id: \.id) {
             $tr in
             TransactionView(transaction: tr)
                 .swipeActions(edge: .leading) {
@@ -30,24 +30,32 @@ struct TransactionList: View {
     }
     
     private func deleteItem (at offset: IndexSet) {
-        stack.transactions.remove(atOffsets: offset)
+        transactions.list.remove(atOffsets: offset)
         budget.save()
     }
     private func moveItem (at offset: IndexSet, to index: Int) {
         DispatchQueue.main.async {
-            stack.transactions.move(fromOffsets: offset, toOffset: index)
+            transactions.list.move(fromOffsets: offset, toOffset: index)
             budget.save()
         }
     }
     private func cloneItem (from item: Transaction) {
-        stack.transactions.insert(item, at: 0)
+        transactions.list.insert(item, at: 0)
         budget.save()
     }
 }
 
-//#Preview {
-//    let budget = Budget(stacks: [Stack()])
-//    List {
-//        TransactionList(stack: budget.stacks[0]).environmentObject(budget)
-//    }
-//}
+#Preview {
+    let budget = Budget(
+        balances: [Balance(of: 1500)],
+        incomes: Transactions([Transaction(of: 2000)]),
+        stacks: [
+            Stack(name: "test1", color: .red, type: .percent, percent: 0.1, transactions: Transactions([
+                Transaction(of: 100, on: Date.now, desc: "Hello"),
+                Transaction(of: -50, on: Date.now, desc: "World")
+            ])),
+        ]);
+    List {
+        TransactionList(transactions: budget.stacks[0].transactions)
+    }.environmentObject(budget)
+}

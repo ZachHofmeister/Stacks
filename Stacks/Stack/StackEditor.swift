@@ -16,7 +16,10 @@ struct StackEditor: View {
     var body: some View {
         List {
             //Header, edit settings of stack
-            Section { StackSettings(stack: stack) }
+            Section {
+                //plain buttonStyle disables tapping on the row background
+                StackSettings(stack: stack).buttonStyle(.plain)
+            }
             .listRowInsets(EdgeInsets())
             
             //List of budget items
@@ -24,12 +27,12 @@ struct StackEditor: View {
                 TransactionList(transactions: stack.transactions)
             }
         } // List
-        .navigationTitle("Stack Info")
+        .navigationTitle(stack.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if stack.type != .overflow {
                 //Details button at top
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     StackDetailsButton(stack: stack)
                 }
                 //Edit and + button at bottom
@@ -295,7 +298,6 @@ struct StackDetails : View {
 
 //Individual items formatted for the stack details
 struct StackDetailItem : View {
-    @EnvironmentObject var budget: Budget
     let name: String
     let amount: Double
     
@@ -328,8 +330,8 @@ struct BudgetTextfieldModifier: ViewModifier {
         incomes: Transactions([Transaction(of: 2000)]),
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
-            Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
+            Stack(name: "test2", color: .green, type: .accrue, accrue: 20),
+            Stack(name: "test3", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
 //            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {

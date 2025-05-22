@@ -14,16 +14,37 @@ struct TransactionView: View {
     var body: some View {
         VStack {
             HStack {
-                TextField("Amount", value: $transaction.amount, formatter: Formatters.curFormatter) { budget.save() }
+                //Amount Textfield
+                TextField(
+                    "Amount",
+                    value: $transaction.amount,
+                    formatter: Formatters.curFormatter,
+                    //save the budget when this field is deselected or view is closed
+                    onEditingChanged: { isStart in
+                        if (!isStart) { budget.save() }
+                    }
+                )
+                    //save the budget whenever this value is edited
+//                    .onChange(of: transaction.amount) { newValue in
+//                        print(newValue)
+//                        budget.save(change: false)
+//                    }
                     .foregroundColor(transaction.amount >= 0 ? .green : .red)
+                
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
-                    .onChange(of: transaction.date) { _ in budget.save() }
+                    .onChange(of: transaction.date) { _ in
+                        budget.save()
+                    }
                     .datePickerStyle(.compact)
                     .labelsHidden()
             }.frame(height: 30)
-            .padding(1)
-            TextField("Description", text: $transaction.desc) { budget.save() }
-            .foregroundColor(.blue)
+            TextField(
+                "Description",
+                text: $transaction.desc,
+                onEditingChanged: { isStart in
+                    if (!isStart) { budget.save() }
+                }
+            )
         }
     }
 }

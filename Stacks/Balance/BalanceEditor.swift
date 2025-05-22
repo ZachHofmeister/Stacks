@@ -13,19 +13,13 @@ struct BalanceEditor: View {
     
     var body: some View {
         HStack {
-            TextField("Name", text: $balance.name) {
-                _ in
+            TextField("Name", text: $balance.name) { _ in
                 budget.save()
-                budget.objectWillChange.send()
             }
-            .foregroundColor(.blue)
-            TextField("Balance", value: $balance.balance, formatter: Formatters.curFormatter) {
-                _ in
+            TextField("Balance", value: $balance.balance, formatter: Formatters.curFormatter) { _ in
                 budget.save()
-                budget.objectWillChange.send()
             }
             .foregroundColor(balance.balance >= 0 ? .green : .red)
-//            .modifier(TextfieldSelectAllModifier())
         }
     }
 }

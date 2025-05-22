@@ -9,6 +9,7 @@ import Foundation
 
 class Transaction: ObservableObject, Identifiable, Codable, Equatable, NSCopying {
     var id = UUID()
+    //Maybe: remove @Published here and other places it is not necessary
     @Published var amount: Double
     @Published var date: Date
     @Published var desc: String

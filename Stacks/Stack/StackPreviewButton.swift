@@ -1,5 +1,5 @@
 //
-//  StackPreView.swift
+//  StackPreviewButton.swift
 //  Stacks
 //
 //  Created by Zach Hofmeister on 3/25/25.
@@ -8,12 +8,12 @@
 import SwiftUI
 
 // How the stack appears in the budget stack list
-struct StackPreView: View {
+struct StackPreviewButton: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: Stack
     
     var body: some View {
-        NavigationLink(destination: StackEditor(stack: stack)) {
+        NavigationLink(destination: StackView(stack: stack)) {
             HStack {
                 Image(systemName: stack.icon)
                     .padding(6)

@@ -14,7 +14,7 @@ struct BalanceList: View {
         List {
             ForEach($budget.balances, id: \.id) {
                 $bal in
-                BalanceEditor(balance: bal)
+                BalanceView(balance: bal)
                     .swipeActions(edge: .leading) {
                         Button("Clone") {
                             let copy = bal.copy() as! Balance

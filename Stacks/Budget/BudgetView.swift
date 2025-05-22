@@ -31,7 +31,7 @@ struct BudgetView: View {
             // List of Stacks
             ForEach($budget.stacks, id: \.id) {
                 $stack in
-                StackPreView(stack: stack)
+                StackPreviewButton(stack: stack)
                     .swipeActions(edge: .leading) {
                         if (stack.type != .overflow) {
                             Button("Clone") {

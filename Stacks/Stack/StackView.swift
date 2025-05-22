@@ -9,7 +9,7 @@ import SwiftUI
 import SymbolPicker
 
 // Editor for the details of the stack
-struct StackEditor: View {
+struct StackView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var stack: Stack
     
@@ -338,9 +338,9 @@ struct BudgetTextfieldModifier: ViewModifier {
 //            List {
 //                ForEach (budget.stacks, id: \.id) {
 //                    stack in
-//                    StackEditor(stack: stack)
+//                    StackView(stack: stack)
 //                }
 //            }
-        StackEditor(stack: budget.stacks[0])
+        StackView(stack: budget.stacks[0])
     }.environmentObject(budget)
 }

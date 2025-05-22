@@ -1,5 +1,5 @@
 //
-//  BalanceViewq.swift
+//  BalanceView.swift
 //  Stacks
 //
 //  Created by Zach Hofmeister on 3/25/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BalanceEditor: View {
+struct BalanceView: View {
     @EnvironmentObject var budget: Budget
     @ObservedObject var balance: Balance
     
@@ -27,8 +27,8 @@ struct BalanceEditor: View {
 struct BalanceEditor_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            BalanceEditor(balance: Balance(named: "Bank", of: 100))
-            BalanceEditor(balance: Balance(named: "Credit Card", of: -50))
+            BalanceView(balance: Balance(named: "Bank", of: 100))
+            BalanceView(balance: Balance(named: "Credit Card", of: -50))
         }
         .environmentObject(Budget())
         .previewLayout(.sizeThatFits)

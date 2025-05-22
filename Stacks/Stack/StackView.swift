@@ -144,21 +144,42 @@ struct StackSettings: View {
     }
 }
 
+struct StackIcon : View {
+    @ObservedObject var stack: Stack
+    var size: Size
+    
+    enum Size {
+        case small, large
+    }
+    
+    var body: some View {
+        switch size {
+        case .large:
+            Image(systemName: stack.icon)
+                .padding(16)
+                .foregroundColor(.white)
+                .font(.system(size: 36))
+                .background(Circle().fill(stack.color))
+        default: //small
+            Image(systemName: stack.icon)
+                .padding(6)
+                .foregroundColor(.white)
+                .imageScale(.large)
+                .background(Circle().fill(stack.color))
+        }
+    }
+}
+
 //Stack icon with colored background and symbol
 struct StackIconButton : View {
     @ObservedObject var stack: Stack
     @State private var iconPickerOpen = false
     
     var body: some View {
-        Button(action: {}, label: {
-            Image(systemName: stack.icon)
-                .padding(16)
-                .foregroundColor(Color.white)
-                .font(.system(size: 36))
-                .background(Circle().fill(stack.color))
-        })
-        .onTapGesture() {
+        Button(action: {
             iconPickerOpen = true
+        }) {
+            StackIcon(stack: stack, size: .large)
         }
         .sheet(isPresented: $iconPickerOpen) {
             ZStack {

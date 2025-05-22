@@ -15,11 +15,7 @@ struct StackPreviewButton: View {
     var body: some View {
         NavigationLink(destination: StackView(stack: stack)) {
             HStack {
-                Image(systemName: stack.icon)
-                    .padding(6)
-                    .foregroundColor(Color.white)
-                    .imageScale(.large)
-                    .background(Circle().fill(stack.color))
+                StackIcon(stack: stack, size: .small)
                 Text(stack.name)
                 VStack {
                     HStack {
@@ -54,7 +50,9 @@ struct StackPreviewButton: View {
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
             Stack(name: "test1", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
+            Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([
+                Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100)
+            ])),
 //            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {

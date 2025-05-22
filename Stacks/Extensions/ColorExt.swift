@@ -35,6 +35,16 @@ extension Color: Codable {
             default: return Color.teal
         }
     }
+    // https://stackoverflow.com/questions/75716651/change-text-color-based-on-view-background-color-gradient-in-swiftui
+    var isDark: Bool {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0
+        guard UIColor(self).getRed(&red, green: &green, blue: &blue, alpha: nil) else {
+            return false
+        }
+        
+        let lum = 0.2126 * red + 0.7152 * green + 0.0722 * blue
+        return lum < 0.5
+    }
     
     // The following is from ColorCodable.swift by Peter Friese
     // https://gist.github.com/peterfriese/bb2fc5df202f6a15cc807bd87ff15193

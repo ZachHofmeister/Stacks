@@ -329,9 +329,9 @@ struct BudgetTextfieldModifier: ViewModifier {
         balances: [Balance(of: 1500)],
         incomes: Transactions([Transaction(of: 2000)]),
         stacks: [
-            Stack(name: "test1", color: .red, type: .percent, percent: 0.1),
-            Stack(name: "test2", color: .green, type: .accrue, accrue: 20),
-            Stack(name: "test3", color: .blue, type: .reserved, transactions: Transactions([Transaction(of: 100)])),
+            Stack(name: "test3", color: .blue, type: .reserved, transactions: Transactions([
+                Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100)
+            ])),
 //            Stack(name: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {

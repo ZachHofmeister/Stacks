@@ -52,6 +52,9 @@ struct TransactionList: View {
         stacks: [
             Stack(name: "test1", color: .red, type: .percent, percent: 0.1, transactions: Transactions([
                 Transaction(of: 100, on: Date.now, desc: "Hello"),
+                Transaction(of: -50, on: Date.now, desc: "World"),
+                Transaction(of: -50, on: Date.now, desc: "World"),
+                Transaction(of: -50, on: Date.now, desc: "World"),
                 Transaction(of: -50, on: Date.now, desc: "World")
             ])),
         ]);

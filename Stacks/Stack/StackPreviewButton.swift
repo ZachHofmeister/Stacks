@@ -53,7 +53,7 @@ struct StackPreviewButton: View {
             Stack(name: "test1", color: .blue, type: .reserved, transactions: Transactions([
                 Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100)
             ])),
-//            Stack(name: "test1", color: .yellow, type: .overflow)
+//            Stack(labe;: "test1", color: .yellow, type: .overflow)
         ]);
     NavigationStack {
         BudgetView()

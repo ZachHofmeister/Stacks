@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-//TODO: can this be combined with TransactionView?
+//TODO: can this be combined with TransactionList?
 struct IncomeList: View {
     @EnvironmentObject var budget: Budget
         
@@ -30,5 +30,16 @@ struct IncomeList: View {
     public func addIncome () {
         budget.incomes.list.insert(Transaction(), at: 0)
         budget.save()
+    }
+}
+
+#Preview {
+    let budget = Budget(incomes: Transactions([
+        Transaction(of: 2000),
+        Transaction(of: -3000),
+        Transaction(of: 4567)
+    ]))
+    NavigationStack {
+        IncomeList().environmentObject(budget)
     }
 }

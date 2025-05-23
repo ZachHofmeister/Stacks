@@ -110,37 +110,16 @@ struct StackSettings: View {
                 StackOverflowSettings(stack: stack)
             }
         } //VStack
-        .onChange(of: stack.color) {
-            _ in
-            budget.save()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.type) {
-            _ in
-            budget.save()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.accrueStart) {
-            _ in
-            budget.save()
-            budget.objectWillChange.send()
-        }
+        .onChange(of: stack.color) { _ in budget.save() }
+        .onChange(of: stack.type) { _ in budget.save() }
+        .onChange(of: stack.type) { _ in budget.save() }
         .onChange(of: stack.accrueFrequency) {
             val in
             if (val <= 0) { stack.accrueFrequency = 1 }
             budget.save()
-            budget.objectWillChange.send()
         }
-        .onChange(of: stack.accruePeriod) {
-            _ in
-            budget.save()
-            budget.objectWillChange.send()
-        }
-        .onChange(of: stack.icon) {
-            _ in
-            budget.save()
-            budget.objectWillChange.send()
-        }
+        .onChange(of: stack.accruePeriod) { _ in budget.save() }
+        .onChange(of: stack.icon) { _ in budget.save() }
     }
 }
 
@@ -295,52 +274,38 @@ struct StackDetails : View {
     
     var body: some View {
         VStack {
-            Text("Details")
-            .font(.largeTitle).padding([.top])
+            Text("Details").font(.largeTitle)
+            // Percent specific
             if (stack.type == .percent) {
-                StackDetailItem(name: "Total Income", amount: budget.totalIncome)
-                .padding([.top])
-                StackDetailItem(name: "\(Formatters.asPercent(from: stack.percent))", amount: stack.baseAmount(budget: budget))
-                .padding([.top])
+                StackDetailItem(label: "Total Income", amount: budget.totalIncome)
+                StackDetailItem(label: "\(Formatters.asPercent(from: stack.percent))", amount: stack.baseAmount(budget: budget))
             }
+            // Accrue specific
             else if (stack.type == .accrue) {
-                StackDetailItem(name: "Accrued", amount: stack.baseAmount(budget: budget))
-                .padding([.top])
+                StackDetailItem(label: "Accrued", amount: stack.baseAmount(budget: budget))
             }
-            StackDetailItem(name: "Added", amount: stack.totalAdded)
-            .padding([.top])
-            StackDetailItem(name: "Spent", amount: stack.totalSpent)
-            .padding([.top])
-            StackDetailItem(name: "Balance", amount: stack.balance(budget: budget))
-            .padding([.top, .bottom])
+            StackDetailItem(label: "Added", amount: stack.totalAdded)
+            StackDetailItem(label: "Spent", amount: stack.totalSpent)
+            StackDetailItem(label: "Balance", amount: stack.balance(budget: budget))
+            
         }
+        .padding([.top, .bottom])
     }
 }
 
-//Individual items formatted for the stack details
+//Individual item for StackDetails
 struct StackDetailItem : View {
-    let name: String
+    let label: String
     let amount: Double
     
     var body: some View {
         HStack {
-            Text(name)
+            Text(label)
             Spacer()
             Text("\(Formatters.asCurrency(from: amount))")
             .foregroundColor(amount >= 0 ? .green : .red)
             .bold()
-        }
-    }
-}
-//
-//Modifier for textfields in Stack
-struct BudgetTextfieldModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .frame(height:36)
-            .background(Color(.tertiarySystemGroupedBackground))
-            .cornerRadius(10)
-            .multilineTextAlignment(.center)
+        }.padding([.top])
     }
 }
 
@@ -352,16 +317,9 @@ struct BudgetTextfieldModifier: ViewModifier {
         stacks: [
             Stack(name: "test3", color: .blue, type: .reserved, transactions: Transactions([
                 Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100), Transaction(of: 100)
-            ])),
-//            Stack(name: "test1", color: .yellow, type: .overflow)
+            ]))
         ]);
     NavigationStack {
-//            List {
-//                ForEach (budget.stacks, id: \.id) {
-//                    stack in
-//                    StackView(stack: stack)
-//                }
-//            }
         StackView(stack: budget.stacks[0])
     }.environmentObject(budget)
 }
